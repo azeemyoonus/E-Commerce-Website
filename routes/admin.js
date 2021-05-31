@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var producthelper = require('../dbHelpers/product-helpers')
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   let products = [
@@ -49,12 +49,19 @@ router.get('/', function (req, res, next) {
 });
 router.get("/add-products", (req, res) => {
   res.render('admin/add-products');
-  console.log('clicked add products');
 });
 router.post('/add-products', (req, res) => {
-  console.log("just here");
-  console.log(req.body);
-  console.log(req.files.product_photo);
+
+  producthelper.addProduct(req.body, (id) => {
+    let image =req.files.product_photo;
+    image.mv("./public/product-images/"+id+".jpeg",(err)=>{
+      if(!err) console.log("no error")
+      else console.log("error in photo :"+err)
+    })
+    res.render("admin/add-products");
+  });
+
 });
+
 
 module.exports = router;

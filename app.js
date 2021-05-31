@@ -4,7 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs= require('express-handlebars');
-var fileUpload= require('express-fileupload')
+var fileUpload= require('express-fileupload');
+var db= require('./config/connection')
 
 var adminRouter = require('./routes/admin');
 var userRouter = require('./routes/user');
@@ -24,6 +25,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload())
 
+db.connect((db_name)=>{
+  if (db_name){
+  console.log('you have created database: '+db_name);
+  }
+  else{
+    console.log("not created");
+  }
+});
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
 
