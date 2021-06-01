@@ -15,13 +15,15 @@
   </thead>
   <tbody>
       {{#each products}}
+      {{ nbr}}
     <tr>
-      <th scope="row">{{this.id}}</th>
-      <td>{{this.name}}</td>
-      <td>{{this.price}}</td>
-      <td>{{this.description}}</td>
-      <td><img style="height:50px;width:50px;" src="{{this.image}}" alt="Product-photo"></td>
+      <th scope="row">{{this}}</th>
+      <td>{{this.product_name}}</td>
+      <td>{{this.product_price}}</td>
+      <td>{{this.product_description}}</td>
+      <td><img style="height:50px;width:50px;" src="product-images/{{this._id}}.jpeg" alt="Product-photo"></td>
     </tr>
+   
     {{/each}}
 </table>
     </div>
