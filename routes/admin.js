@@ -6,7 +6,7 @@ var producthelper = require('../dbHelpers/product-helpers')
 router.get('/', function (req, res, next) {
   var nbr=1;
 producthelper.getProduct().then((products)=>{
-  res.render('admin/view-products',{products,nbr})
+  res.render('admin/view-products',{products,admin:true})
 })
 
 
