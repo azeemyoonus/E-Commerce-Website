@@ -1,4 +1,4 @@
-const { hash } = require('bcrypt');
+
 var db = require('../config/connection')
 var collection = require('./collections');
 const bcrypt = require('bcrypt');

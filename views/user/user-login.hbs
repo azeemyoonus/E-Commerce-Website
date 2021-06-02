@@ -2,7 +2,7 @@
     <div class="container mt-5">
         <form action='user-login' method='POST' >
             {{#if loginErr}}
-            <h6>Invalid useremail or password</h6>
+            <h6>{{this.loginErr}}</h6>
             {{/if}}
             <div class="form-group">
                 <label for="email">Email address</label>

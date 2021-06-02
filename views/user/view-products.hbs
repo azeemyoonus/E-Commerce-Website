@@ -1,26 +1,24 @@
-
 <section>
-<div class="">
-  <div class="container">
-    <div class="row">
-      {{#each products}}
+  <div class="">
+    <div class="container">
+      <div class="card-deck row">
+        {{#each products}}
         <div class="col-md-3">
-          <div class="card" style="width: 18rem;">
-            <img class='img-flex'  src="product-images/{{this._id}}.jpeg"  class="card-img-top" alt="" />
+          <div class="card" style="width: 15rem;">
+            <img class='p-4' style="height: inherit;width: inherit;" src="product-images/{{this._id}}.jpeg" alt="" />
             <div class="card-body">
               <h5 class="card-title">{{this.product_name}}</h5>
               <p class="card-text">{{this.product_description}}</p>
               <div class="row">
-             <h4 class="col-md-6" >{{this.product_price}}</h4>
-              <a href="#" class="col-md-6 mr-auto btn btn-primary">Buy</a>
+                <h4 class="col-md-6">{{this.product_price}}</h4>
+                <a href="#" class="col-md-6 mr-auto btn btn-primary">Buy</a>
               </div>
-              
             </div>
 
           </div>
         </div>
-      {{/each}}
+        {{/each}}
+      </div>
     </div>
   </div>
-</div>
 </section>
