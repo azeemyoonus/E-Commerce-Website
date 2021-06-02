@@ -14,16 +14,22 @@ router.get("/", function (req, res, next) {
 });
 
 router.get('/login', (req, res) => {
-  let user = req.session.user
-  res.render('user/user-login', { user })
+  let login = req.session.loggIn
+   if(login){
+     res.redirect('/')
+   }
+   else
+    res.render('user/user-login')
+  
+  
 })
 
 router.post(('/user-login'), (req, res) => {
   userhelper.doLogin(req.body).then((check) => {
     if (check.status) {
+      req.session.loggIn=true;
       req.session.user = check.user;
-      // console.log(req.session.user)
-      res.redirect('/')
+      res.redirect('/login')
     }
     else {
       res.redirect('/login');
