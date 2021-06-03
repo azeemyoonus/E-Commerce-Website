@@ -40,7 +40,6 @@ router.get('/delete-product',(req,res)=>{
 router.get('/edit-products',(req,res)=>{
   let id =req.query.id;
   producthelper.getOneProduct(req.query.id).then((productDetails)=>{
-    console.log(productDetails)
     res.render('admin/edit-product',{productDetails,id});
   })
   

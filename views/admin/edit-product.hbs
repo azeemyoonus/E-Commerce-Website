@@ -19,8 +19,8 @@
 
         <div class="form-group">
             <label for="product_photo">Product Photo</label>
-            <img style='height: 75px;width:75px;' src="/product-images/{{productDetails._id}}.jpeg" alt='image'>
-            <input type="file" class="form-control-file" name='product_photo' id="product_photo" />
+            <img style='height: 75px;width:75px;' src="/product-images/{{productDetails._id}}.jpeg" alt='image' id='viewImg' >
+            <input type="file" onchange="vieweditimg(event)" class="form-control-file" name='product_photo' id="product_photo" />
         </div>
 
         <button type="submit" class="btn btn-light border-success">Submit</button>
@@ -28,3 +28,8 @@
     </div>
    
 </section>
+<script>
+    function vieweditimg(event){
+       document.getElementById('viewImg').src=URL.createObjectURL(event.target.files[0])
+    }
+</script>
