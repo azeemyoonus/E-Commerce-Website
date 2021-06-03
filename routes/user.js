@@ -1,3 +1,4 @@
+const { response } = require("express");
 var express = require("express");
 var router = express.Router();
 var productHelper = require('../dbHelpers/product-helpers');
@@ -64,7 +65,12 @@ router.get('/signout', (req, res) => {
 
 router.get('/cart',verifyLogin,(req,res)=>{
   let user = req.session.user
+  
+userhelper.addToCart(user,req.query.productId).then((response)=>{
+  console.log(response)
   res.render('user/cart',{user})
+})
+  
 })
 
 module.exports = router;

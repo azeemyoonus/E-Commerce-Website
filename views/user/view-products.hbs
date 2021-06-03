@@ -11,10 +11,9 @@
               <p class="card-text">{{this.product_description}}</p>
               <div class=" card-footer">
                 <h4 class=" ">{{this.product_price}}</h4>
-                <a href="#" style='float: right;' class=" btn btn-primary">Buy</a>
+                <a href="/cart?productId={{this._id}}" style='float: right;' class=" btn btn-primary">Add To</a>
               </div>
             </div>
-
           </div>
         </div>
         {{/each}}

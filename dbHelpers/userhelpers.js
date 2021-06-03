@@ -2,35 +2,31 @@
 var db = require('../config/connection')
 var collection = require('./collections');
 const bcrypt = require('bcrypt');
+const collections = require('./collections');
+var objectid = require('mongodb').ObjectID;
 
 module.exports = {
 
     doLogin: (userdata) => {
         return new Promise(async (resolve, reject) => {
-            let response={}
+            let response = {}
             user = await db.get().collection(collection.USER_COLLECTION).findOne({ user_email: userdata.user_email })
             if (user) {
                 bcrypt.compare(userdata.user_password, user.user_password).then((status) => {
                     if (status) {
-                        response.user=user;
-                        response.status=true;
-                     //   console.log('login success!')
+                        response.user = user;
+                        response.status = true;
                         resolve(response)
                     }
                     else {
-                     //   console.log('login failed'+status);
-                        resolve(response.status=false)
+                        resolve(response.status = false)
                     }
                 })
             }
             else {
-              //  console.log('login failed');
-                resolve(response.status=false)
+                resolve(response.status = false)
             }
-        
-
         })
-
     },
 
     doCreate: (userdata) => {
@@ -44,14 +40,25 @@ module.exports = {
 
         })
 
-
-
-
-
-
+    },
+    addToCart: (user,productId)=>{
+        return new Promise(async (resolve,reject)=>{
+            let userHasCart=await  db.get().collection(collections.CART_COLLECTIONS).findOne({userCart_id:objectid(user._id)});
+            console.log(user);
+            console.log(productId)
+            if(userHasCart){    
+                console.log('you already have an cart');
+            }else{
+                cardObj={
+                    userCart_id:objectid(user._id),
+                    products:[objectid(productId)]
+                }
+                db.get().collection(collections.CART_COLLECTIONS).insertOne(cardObj).then((response)=>{
+                    console.log(response)
+                    resolve(response)
+                })
+            }
+        })
     }
-
-
-
 
 }
