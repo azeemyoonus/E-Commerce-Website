@@ -10,7 +10,6 @@ router.get("/", function (req, res, next) {
   productHelper.getProduct().then((products) => {
     res.render("user/view-products", { products, admin: false, user });
   })
-
 });
 
 router.get('/login', (req, res) => {
@@ -47,6 +46,8 @@ router.get(('/user-signup'), (req, res) => {
 router.post('/user-signup', (req, res) => {
   userhelper.doCreate(req.body).then((checking) => {
     if (checking) {
+      req.session.loggIn=true
+      req.session.user=checking
       res.redirect('/');
     }
     else {
