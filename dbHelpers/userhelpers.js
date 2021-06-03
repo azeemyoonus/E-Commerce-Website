@@ -47,14 +47,19 @@ module.exports = {
             console.log(user);
             console.log(productId)
             if(userHasCart){    
-                console.log('you already have an cart');
+                db.get().collection(collections.CART_COLLECTIONS).updateOne({userCart_id:objectid(user._id)},
+                {
+                    $push:{
+                        products:objectid(productId)
+                    }
+                })
+
             }else{
                 cardObj={
                     userCart_id:objectid(user._id),
                     products:[objectid(productId)]
                 }
                 db.get().collection(collections.CART_COLLECTIONS).insertOne(cardObj).then((response)=>{
-                    console.log(response)
                     resolve(response)
                 })
             }
