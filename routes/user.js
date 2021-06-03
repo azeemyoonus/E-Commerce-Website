@@ -1,7 +1,8 @@
 var express = require("express");
 var router = express.Router();
 var productHelper = require('../dbHelpers/product-helpers');
-var userhelper = require('../dbHelpers/userhelpers')
+var userhelper = require('../dbHelpers/userhelpers');
+var verifyLogin= require('../middleware/userVerifyLogin');
 
 
 /* GET home page. */
@@ -60,4 +61,10 @@ router.get('/signout', (req, res) => {
   req.session.destroy()
   res.redirect('/')
 })
+
+router.get('/cart',verifyLogin,(req,res)=>{
+  let user = req.session.user
+  res.render('user/cart',{user})
+})
+
 module.exports = router;
