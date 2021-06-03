@@ -1,6 +1,6 @@
 var db = require('../config/connection')
 var collections = require('../dbHelpers/collections')
-var objectid= require('mongodb').ObjectID;
+var objectid = require('mongodb').ObjectID;
 
 module.exports = {
 
@@ -16,11 +16,38 @@ module.exports = {
 
         })
     },
-    deleteProduct:(productid)=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collections.PRODUCT_COLLECTION).deleteOne({_id:objectid(productid) }).then((response)=>{
-                resolve(response)
-            })
+    deleteProduct: (productid) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.PRODUCT_COLLECTION).deleteOne({ _id: objectid(productid) })
+                .then((response) => {
+                    resolve(response)
+                })
+        })
+    },
+    getOneProduct: (productid) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.PRODUCT_COLLECTION).findOne({ _id: objectid(productid) })
+                .then((productdetails) => {
+                    resolve(productdetails)
+                })
+        })
+    },
+    editProduct: (productDetails,id) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.PRODUCT_COLLECTION)
+                .updateOne({ _id: objectid(id) }, {
+                    $set:
+                    {
+                        product_name: productDetails.product_name,
+                        product_price: productDetails.product_price,
+                        product_description: productDetails.product_description,
+                        product_price: productDetails.product_price,
+                    }
+
+                }).then((response)=>{
+                    console.log(productDetails)
+                    resolve(response)
+                })
         })
     }
 

@@ -1,0 +1,30 @@
+<section>
+    <div class="container mt-5 ">
+         <form action='/admin/edit-products?id={{id}}' method='POST' enctype="multipart/form-data">
+         <legend>Edit Product</legend>
+        <div class="form-group">
+            <label for="product_name">Product Name</label>
+            <input type="text" class="form-control" id="product_name" value="{{productDetails.product_name}}"  name="product_name"
+                placeholder="Enter product name" />
+        </div>
+        <div class="form-group">
+            <label for="product_price">Price</label>
+            <input type="text" class="form-control" id="product_price" value="{{productDetails.product_price}}" name="product_price" placeholder="Price" />
+        </div>
+        <div class="form-group">
+            <label for="product_description">Description</label>
+            <input type="text" class="form-control" id="product_description" value="{{productDetails.product_description}}"  name="product_description"
+                placeholder="Description" />
+        </div>
+
+        <div class="form-group">
+            <label for="product_photo">Product Photo</label>
+            <img style='height: 75px;width:75px;' src="/product-images/{{productDetails._id}}.jpeg" alt='image'>
+            <input type="file" class="form-control-file" name='product_photo' id="product_photo" />
+        </div>
+
+        <button type="submit" class="btn btn-light border-success">Submit</button>
+    </form>
+    </div>
+   
+</section>

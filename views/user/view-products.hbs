@@ -1,17 +1,17 @@
 <section>
   <div class="">
     <div class="container">
-      <div class="card-deck row">
+      <div class="card-deck row ">
         {{#each products}}
         <div class="col-md-3">
           <div class="card" style="width: 15rem;">
-            <img class='p-4' style="height: inherit;width: inherit;" src="product-images/{{this._id}}.jpeg" alt="" />
+            <img class='p-4 card-img-top ' style="height: inherit;width: inherit;" src="product-images/{{this._id}}.jpeg" alt="" />
             <div class="card-body">
               <h5 class="card-title">{{this.product_name}}</h5>
               <p class="card-text">{{this.product_description}}</p>
-              <div class="row">
-                <h4 class="col-md-6">{{this.product_price}}</h4>
-                <a href="#" class="col-md-6 mr-auto btn btn-primary">Buy</a>
+              <div class=" card-footer">
+                <h4 class=" ">{{this.product_price}}</h4>
+                <a href="#" style='float: right;' class=" btn btn-primary">Buy</a>
               </div>
             </div>
 
