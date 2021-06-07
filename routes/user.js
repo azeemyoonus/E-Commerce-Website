@@ -7,11 +7,21 @@ var verifyLogin = require('../middleware/userVerifyLogin');
 
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
+router.get ("/", async  function (req, res, next) {
   let user = req.session.user
+  let cartCount=null
+ 
+  if (req.session.user){
+    cartCount= await userhelper.getCartCount(req.session.user._id)
+    req.session.cartCount= cartCount
+  }
+  
+ 
+  
   productHelper.getProduct().then((products) => {
-    res.render("user/view-products", { products, admin: false, user });
+    res.render("user/view-products", { products, admin: false, user, cartCount });
   })
+  console.log(cartCount);
 });
 
 router.get('/login', (req, res) => {
@@ -74,10 +84,12 @@ router.get('/cart', verifyLogin, (req, res) => {
 
 })
 
-router.get('/cartDetails', verifyLogin, (req,res)=>{
+router.get('/cartDetails', verifyLogin,async (req,res)=>{
   let user = req.session.user
-  userhelper.getCartProdDetails(user._id).then((response)=>{
-    res.render('user/cart',{user})
+  let cartCount= req.session.cartCount
+  await userhelper.getCartProdDetails(user._id).then((response)=>{
+    console.log(response[0].cartProductDetails);
+    res.render('user/cart',{user,cartCount})
   })
 })
 
