@@ -4,6 +4,7 @@ var collection = require('./collections');
 const bcrypt = require('bcrypt');
 const collections = require('./collections');
 var objectid = require('mongodb').ObjectID;
+const { CART_COLLECTIONS } = require('./collections');
 
 module.exports = {
 
@@ -44,8 +45,6 @@ module.exports = {
     addToCart: (user,productId)=>{
         return new Promise(async (resolve,reject)=>{
             let userHasCart=await  db.get().collection(collections.CART_COLLECTIONS).findOne({userCart_id:objectid(user._id)});
-            console.log(user);
-            console.log(productId)
             if(userHasCart){    
                 db.get().collection(collections.CART_COLLECTIONS).updateOne({userCart_id:objectid(user._id)},
                 {
@@ -53,7 +52,7 @@ module.exports = {
                         products:objectid(productId)
                     }
                 })
-
+                resolve()
             }else{
                 cardObj={
                     userCart_id:objectid(user._id),
@@ -63,6 +62,36 @@ module.exports = {
                     resolve(response)
                 })
             }
+        })
+    },
+
+    getCartProdDetails:(userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            let cartProductDetails = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
+                {
+                    $match:{userCart_id:objectid(userId)}
+                },
+                {
+                    $lookup:
+                    {
+                        from: collections.PRODUCT_COLLECTION,
+                        let:{productList:"$products"},
+                        pipeline:[
+                            {
+                                $match:{
+                                    $expr:
+                                    {
+                                        $in:["$_id","$$productList"]
+                                    }
+                                }
+                            }
+                        ],
+                        as: "cartProductDetails"
+                    }
+                }
+            ]).toArray()
+            console.log(cartProductDetails[0].cartProductDetails)
+            resolve(cartProductDetails)
         })
     }
 
