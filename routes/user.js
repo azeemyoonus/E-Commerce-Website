@@ -87,10 +87,9 @@ router.get('/cart', verifyLogin, (req, res) => {
 router.get('/cartDetails', verifyLogin,async (req,res)=>{
   let user = req.session.user
   let cartCount= req.session.cartCount
-  await userhelper.getCartProdDetails(user._id).then((response)=>{
-    console.log(response[0].cartProductDetails);
-    res.render('user/cart',{user,cartCount})
-  })
+  let products= await userhelper.getCartProdDetails(user._id);
+    console.log(products);
+    res.render('user/cart',{user,cartCount,"items":products[0].cartProductDetails.length , "cartProducts":products[0].cartProductDetails})
 })
 
 module.exports = router;
