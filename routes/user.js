@@ -1,27 +1,25 @@
-const { response } = require("express");
 var express = require("express");
 var router = express.Router();
 var productHelper = require('../dbHelpers/product-helpers');
 var userhelper = require('../dbHelpers/userhelpers');
 var verifyLogin = require('../middleware/userVerifyLogin');
 
-
 /* GET home page. */
-router.get ("/", async  function (req, res, next) {
+router.get("/", async function (req, res, next) {
   let user = req.session.user
-  let cartCount=null
- 
-  if (req.session.user){
-    cartCount= await userhelper.getCartCount(req.session.user._id)
-    req.session.cartCount= cartCount
-  }
-  
- 
-  
+  // let cartCount = null
+
+  // if (req.session.cartCount) {
+  //   cartCount = await userhelper.getCartCount(req.session.user._id)
+  //   req.session.cartCount = cartCount
+  // }
+
+
+
   productHelper.getProduct().then((products) => {
-    res.render("user/view-products", { products, admin: false, user, cartCount });
+    res.render("user/view-products", { products, admin: false, user });
   })
-  console.log(cartCount);
+  // console.log(cartCount);
 });
 
 router.get('/login', (req, res) => {
@@ -39,9 +37,10 @@ router.get('/login', (req, res) => {
 router.post(('/user-login'), (req, res) => {
   userhelper.doLogin(req.body).then((check) => {
     if (check.status) {
+      console.log("reached loggIn");
       req.session.loggIn = true;
       req.session.user = check.user;
-      res.redirect('/login')
+      res.redirect('/');
     }
     else {
       req.session.loginErr = 'Invalid Username or Password';
@@ -58,8 +57,8 @@ router.get(('/user-signup'), (req, res) => {
 router.post('/user-signup', (req, res) => {
   userhelper.doCreate(req.body).then((checking) => {
     if (checking) {
-      req.session.loggIn = true
-      req.session.user = checking
+      req.session.loggIn = true;
+      req.session.user = checking;
       res.redirect('/');
     }
     else {
@@ -77,19 +76,19 @@ router.get('/cart', verifyLogin, (req, res) => {
   let user = req.session.user
 
   userhelper.addToCart(user, req.query.productId).then((response) => {
-
-    res.redirect('/cartDetails')
+    // console.log(response);
+    res.redirect('/')
   })
 
 
 })
 
-router.get('/cartDetails', verifyLogin,async (req,res)=>{
+router.get('/cartDetails', verifyLogin, async (req, res) => {
   let user = req.session.user
-  let cartCount= req.session.cartCount
-  let products= await userhelper.getCartProdDetails(user._id);
-    console.log(products);
-    res.render('user/cart',{user,cartCount,"items":products[0].cartProductDetails.length , "cartProducts":products[0].cartProductDetails})
+  // let cartCount = req.session.cartCount
+  let products = await userhelper.getCartProdDetails(user._id);
+  //console.log(products);
+  res.render('user/cart', { user, "cartProducts": products[0].cartProductDetails })
 })
 
 module.exports = router;
