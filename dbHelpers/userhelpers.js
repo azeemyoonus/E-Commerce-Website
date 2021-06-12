@@ -4,7 +4,6 @@ var collection = require('./collections');
 const bcrypt = require('bcrypt');
 const collections = require('./collections');
 var objectid = require('mongodb').ObjectID;
-const { use } = require('../routes/user');
 
 
 module.exports = {
@@ -102,26 +101,19 @@ module.exports = {
                 {
                     $match: { userCart_id: objectid(userId) }
                 },
-                // {
-                //     $lookup:
-                //     {
-                //         from: collections.PRODUCT_COLLECTION,
-                //         let: { productList: "$products" },
-                //         pipeline: [
-                //             {
-                //                 $match: {
-                //                     $expr:
-                //                     {
-                //                         $in: ["$_id", "$$productList"]
-                //                     }
-                //                 }
-                //             }
-                //         ],
-                //         as: "cartProductDetails"
-                //     }
-                // }            
+                {
+                    $unwind:"$products"
+                },
+                {
+                    $lookup:
+                    {
+                        from:collections.PRODUCT_COLLECTION,
+                        localField:"products.item",
+                        foreignField:"_id",
+                        as:"cartProductDetails"
+                    }
+                }       
             ]).toArray()
-            console.log(cartProductDetails[0].products);
             resolve(cartProductDetails)
         })
     },
