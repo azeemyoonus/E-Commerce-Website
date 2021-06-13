@@ -141,26 +141,7 @@ module.exports = {
     incrementProduct: (productId, value, userCartId, currentValue) => {
         return new Promise((resolve, reject) => {
             value = parseInt(value)
-            if (currentValue >= 1 && value == 1) {
-                db.get().collection(collections.CART_COLLECTIONS).updateOne({ 'products.item': objectid(productId) },
-                    {
-                        $inc:
-                            { 'products.$.quantity': value }
-                    }).then((response) => {
-                        resolve(response)
-                    })
-
-            }
-            else if (value == -1 && currentValue > 1) {
-                db.get().collection(collections.CART_COLLECTIONS).updateOne({ 'products.item': objectid(productId) },
-                    {
-                        $inc:
-                            { 'products.$.quantity': value }
-                    }).then((response) => {
-                        resolve(response)
-                    })
-            }
-            else if (value == -1 && currentValue == 1) {
+            if (value == -1 && currentValue == 1) {
                 db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(userCartId) },
                     { $pull: { products: { item: { $eq: objectid(productId) } } } }
                 ).then((response) => {
@@ -168,6 +149,18 @@ module.exports = {
                 })
 
             }
+            else {
+                db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(userCartId),'products.item': objectid(productId) },
+                    {
+                        $inc:
+                            { 'products.$.quantity': value }
+                    }).then((response) => {
+                        resolve(response)
+                    })
+
+            }
+
+
 
 
 
