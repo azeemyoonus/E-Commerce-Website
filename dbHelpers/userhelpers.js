@@ -114,7 +114,6 @@ module.exports = {
                     }
                 }
             ]).toArray()
-            console.log(cartProductDetails);
             resolve(cartProductDetails)
         })
     },
@@ -128,15 +127,53 @@ module.exports = {
 
         })
     },
-    removeCartProduct: (productId,userId) => {
+    removeCartProduct: (productId, userId) => {
         return new Promise((resolve, reject) => {
-          console.log(productId,userId);
+            console.log(productId, userId);
             db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(userId) },
                 { $pull: { products: { item: { $eq: objectid(productId) } } } }
             ).then((response) => {
                 resolve(response)
             })
         })
+    },
+
+    incrementProduct: (productId, value, userCartId, currentValue) => {
+        return new Promise((resolve, reject) => {
+            value = parseInt(value)
+            if (currentValue >= 1 && value == 1) {
+                db.get().collection(collections.CART_COLLECTIONS).updateOne({ 'products.item': objectid(productId) },
+                    {
+                        $inc:
+                            { 'products.$.quantity': value }
+                    }).then((response) => {
+                        resolve(response)
+                    })
+
+            }
+            else if (value == -1 && currentValue > 1) {
+                db.get().collection(collections.CART_COLLECTIONS).updateOne({ 'products.item': objectid(productId) },
+                    {
+                        $inc:
+                            { 'products.$.quantity': value }
+                    }).then((response) => {
+                        resolve(response)
+                    })
+            }
+            else if (value == -1 && currentValue == 1) {
+                db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(userCartId) },
+                    { $pull: { products: { item: { $eq: objectid(productId) } } } }
+                ).then((response) => {
+                    resolve(response)
+                })
+
+            }
+
+
+
+        })
+
+
     }
 
 

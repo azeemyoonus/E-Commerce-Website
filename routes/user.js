@@ -69,7 +69,7 @@ router.get('/cart', verifyLogin, (req, res) => {
   userhelper.addToCart(user, req.query.productId).then((response) => {
     // console.log(response);
 
-    res.redirect('/')
+    res.json({status:true})
 
   })
 })
@@ -81,10 +81,18 @@ router.get('/cartDetails', verifyLogin, async (req, res) => {
   res.render('user/cart', { user, "cartProducts": products })
 })
 
-router.get('/remove-cart-product/', async (req, res) => {
-  await userhelpers.removeCartProduct(req.query.productId,req.query.userCartId).then((response)=>{
-    res.json({status:true})
+router.get('/remove-cart-product/', verifyLogin, async (req, res) => {
+  await userhelpers.removeCartProduct(req.query.productId, req.query.userCartId).then((response) => {
+    res.json({ status: true })
   })
+
+})
+
+router.get('/incrementProduct/', verifyLogin, async (req, res) => {
+  await userhelpers.incrementProduct(req.query.productId, req.query.value, req.query.userCartID, req.query.currentValue)
+    .then((response) => {
+     res.json({status:true})
+    })
 
 })
 

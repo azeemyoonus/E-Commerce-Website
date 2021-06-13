@@ -1,7 +1,7 @@
 
-<section id='cartDetails' class="cardcrop bg-light container-fluid" style="padding-top: 4em;padding-bottom:5em;">
+<section id='cart' class="cardcrop bg-light container-fluid" style="padding-top: 4em;padding-bottom:5em;">
 
-    <section style="" class="col-7 col-md-8">
+    <section id="cartDetails" style="" class="col-7 col-md-8">
         {{#each cartProducts }}
 
         <div  class="">
@@ -16,9 +16,9 @@
                     </div>
                     {{/each}}
                     <div class="pt-3 text-muted">
-                        <button class="btn btn-muted badge  border ms-2 py-1 fw-light text-dark">-</button>
-                        <span class="badge border text-dark ms-2 py-1 ">{{products.quantity}}</span>
-                        <button class="btn btn-muted badge border ms-2 py-1 fw-light text-dark ">+</button>
+                        <button class="btn btn-muted shadow-none badge  border ms-2 py-1 fw-light text-dark" onclick="incrementPoduct(-1,'{{this.products.item}}','{{this.userCart_id}}','{{products.quantity}}')" >-</button>
+                        <span class="badge border shadow-none text-dark ms-2 py-1 ">{{products.quantity}}</span>
+                        <button class="btn btn-muted shadow-none badge border ms-2 py-1 fw-light text-dark " onclick="incrementPoduct(1,'{{this.products.item}}','{{this.userCart_id}}','{{products.quantity}}')">+</button>
                         
                         <button
                             class="btn btn-muted shadow-none badge py-1 border ms-5 py-2 fw-light text-dark"  onclick="removeItem('{{this.products.item}}','{{this.userCart_id}}',{{#each cartProductDetails}}'{{this.product_name}}'{{/each}})">Remove</button>
@@ -31,7 +31,7 @@
         {{/each}}
     </section>
 
-    <aside class="sidenav col-md-4 pe-2 shadow-sm" style="float: right ">
+    <aside id="cartDetails" class="sidenav col-md-4 pe-2 shadow-sm" style="float: right ">
         <div style="" class=" ">
             <div class="ps-3 pt-3">
                 <div class=" row ">

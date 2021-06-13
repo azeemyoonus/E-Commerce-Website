@@ -1,5 +1,5 @@
-<section class="cardcrop bg-light container-fluid" style="padding-top: 4em;padding-bottom:5em;" >
-  <div class="">
+<section id='viewProducts' class="cardcrop bg-light container-fluid" style="padding-top: 4em;padding-bottom:5em;" >
+  <div id='products' class="">
     <div class="container">
       <div class="card-columns row ">
         {{#each products}}
@@ -11,7 +11,8 @@
               <p class="card-text">{{this.product_description}}</p>
               <div class=" card-footer">
                 <h4 class=" ">{{this.product_price}}</h4>
-                <a href="cart?productId={{this._id}}" style='float: right;' class=" btn btn-primary">Add To Cart</a>
+                <button class="btn btn-warning " onclick="addToCart('{{this._id}}')" >Add To Cart</button>
+                {{!-- <a href="cart?productId={{this._id}}" style='float: right;' class=" btn btn-primary">Add To Cart</a> --}}
               </div>
             </div>
           </div>
