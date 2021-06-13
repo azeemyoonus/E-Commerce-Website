@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var productHelper = require('../dbHelpers/product-helpers');
+const userhelpers = require("../dbHelpers/userhelpers");
 var userhelper = require('../dbHelpers/userhelpers');
 var verifyLogin = require('../middleware/userVerifyLogin');
 
@@ -69,15 +70,22 @@ router.get('/cart', verifyLogin, (req, res) => {
     // console.log(response);
 
     res.redirect('/')
-    
-    })
+
   })
+})
 
 
 router.get('/cartDetails', verifyLogin, async (req, res) => {
   let user = req.session.user
   let products = await userhelper.getCartProdDetails(user._id);
   res.render('user/cart', { user, "cartProducts": products })
+})
+
+router.get('/remove-cart-product/', async (req, res) => {
+  await userhelpers.removeCartProduct(req.query.productId,req.query.userCartId).then((response)=>{
+    res.json({status:true})
+  })
+
 })
 
 module.exports = router;

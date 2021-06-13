@@ -93,7 +93,7 @@ module.exports = {
             }
         })
     },
-   
+
 
     getCartProdDetails: (userId) => {
         return new Promise(async (resolve, reject) => {
@@ -102,18 +102,19 @@ module.exports = {
                     $match: { userCart_id: objectid(userId) }
                 },
                 {
-                    $unwind:"$products"
+                    $unwind: "$products"
                 },
                 {
                     $lookup:
                     {
-                        from:collections.PRODUCT_COLLECTION,
-                        localField:"products.item",
-                        foreignField:"_id",
-                        as:"cartProductDetails"
+                        from: collections.PRODUCT_COLLECTION,
+                        localField: "products.item",
+                        foreignField: "_id",
+                        as: "cartProductDetails"
                     }
-                }       
+                }
             ]).toArray()
+            console.log(cartProductDetails);
             resolve(cartProductDetails)
         })
     },
@@ -125,6 +126,16 @@ module.exports = {
                 resolve(count)
             }
 
+        })
+    },
+    removeCartProduct: (productId,userId) => {
+        return new Promise((resolve, reject) => {
+          console.log(productId,userId);
+            db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(userId) },
+                { $pull: { products: { item: { $eq: objectid(productId) } } } }
+            ).then((response) => {
+                resolve(response)
+            })
         })
     }
 
