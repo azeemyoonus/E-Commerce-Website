@@ -38,8 +38,8 @@
                     <div class="card border-white ">
                         <h5 class=" card-header bg-white me-2">Price Details</h5>
                         <div class="mt-3">
-                            <p style="display: inline;" class="">Price ({{c}}) items </p>
-                            <p style="display: inline;float: right;" class="me-2 text-right text-muted"> Real Cost</p>
+                            <p style="display: inline;" class="">Price ({{count}}) items </p>
+                            <p style="display: inline;float: right;" class="me-2 text-right text-muted"> {{totalPrice}} </p>
                         </div>
 
                          <div>
@@ -49,8 +49,8 @@
 
                         <hr class="text-dark my-4">
                         <div class="">
-                            <h4 style="display: inline;" class="text-muted" >Total Price</h4>
-                            <p style="display: inline;float: right;" class="text-muted me-2">cost</p>
+                            <p style="display: inline;" class="text-muted" >Total Price</p>
+                            <p style="display: inline-block; float: right;" class="text-muted fw-bolder mt-0 me-auto">{{totalPrice}}</p>
                         </div>
                     </div>
                 </div>

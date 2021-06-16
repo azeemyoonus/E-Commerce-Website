@@ -6,6 +6,7 @@ module.exports = {
 
     addProduct: (product, callback) => {
         db.get().collection(collections.PRODUCT_COLLECTION).insertOne(product).then((data) => {
+            console.log(data.ops[0]);
             callback(data.ops[0]._id);
         })
     },

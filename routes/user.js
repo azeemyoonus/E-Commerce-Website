@@ -78,7 +78,9 @@ router.get('/cart', verifyLogin, (req, res) => {
 router.get('/cartDetails', verifyLogin, async (req, res) => {
   let user = req.session.user
   let products = await userhelper.getCartProdDetails(user._id);
-  res.render('user/cart', { user, "cartProducts": products })
+  let totalPrice = await userhelper.totalPrice(user._id);
+  let count= await userhelper.getCartCount(user._id);
+  res.render('user/cart', { user, "cartProducts": products ,totalPrice,count})
 })
 
 router.get('/remove-cart-product/', verifyLogin, async (req, res) => {

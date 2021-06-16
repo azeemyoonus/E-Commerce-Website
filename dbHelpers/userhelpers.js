@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const collections = require('./collections');
 var objectid = require('mongodb').ObjectID;
 
-
 module.exports = {
 
     doLogin: (userdata) => {
@@ -150,7 +149,7 @@ module.exports = {
 
             }
             else {
-                db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(userCartId),'products.item': objectid(productId) },
+                db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(userCartId), 'products.item': objectid(productId) },
                     {
                         $inc:
                             { 'products.$.quantity': value }
@@ -167,6 +166,55 @@ module.exports = {
         })
 
 
+    },
+    totalPrice: (userCartId) => {
+        return new Promise(async (resolve, reject) => {
+            let totalPrice = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
+                {
+                    $match: { userCart_id: objectid(userCartId) }
+                },
+                {
+                    $unwind: "$products"
+                },
+               
+                {
+                    $lookup:
+                    {
+                        from: collections.PRODUCT_COLLECTION,
+                        localField: "products.item",
+                        foreignField: "_id",
+                        as: "cartProductDetails"
+                    }
+                },  
+                {
+                    $project:
+                    {
+                        item:'$products.item',
+                        quantity:'$products.quantity',
+                        product:{$arrayElemAt:["$cartProductDetails",0]}
+                    }
+                },     
+                {
+                    $project:
+                    {
+                        price:{$convert:{input:'$product.product_price',to:'int'}},
+                        item:1,
+                        quantity:1,
+                       
+                    
+                    }
+                },
+                {
+                    $group:
+                    {
+                        _id:null,
+                        total:{$sum:{$multiply:["$quantity","$price"]}}}
+                }
+                
+              
+            ]).toArray()
+            resolve(totalPrice[0].total)
+        })
     }
 
 
