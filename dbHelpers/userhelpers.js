@@ -215,6 +215,11 @@ module.exports = {
             ]).toArray()
             resolve(totalPrice[0].total)
         })
+    },
+    orderSummary:(userId)=>{
+        return new Promise((resolve,reject)=>{
+            
+        })
     }
 
 

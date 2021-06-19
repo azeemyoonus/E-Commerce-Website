@@ -98,4 +98,10 @@ router.get('/incrementProduct/', verifyLogin, async (req, res) => {
 
 })
 
+router.get('/place-order', verifyLogin, async(req,res)=>{
+  let totalPrice = await userhelper.totalPrice(user._id);
+  let count= await userhelper.getCartCount(user._id);
+  let products = await userhelper.getCartProdDetails(user._id);
+  res.render('user/order-summary',{"user":req.session.user,totalPrice,count,"cartProducts": products})
+})
 module.exports = router;
