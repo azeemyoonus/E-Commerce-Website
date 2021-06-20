@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var producthelper = require('../dbHelpers/product-helpers');
+var producthelper = require('../helpers/product-helpers');
 
 
 /* GET users listing. */

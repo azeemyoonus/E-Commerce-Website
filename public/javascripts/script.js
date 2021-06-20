@@ -44,3 +44,20 @@ addToCart = (userId) => {
         }
     })
 }
+
+districtSelect=(value)=>{
+   $.ajax({
+       url:'getdistrict?statevalue='+value,
+       method:'get',
+       success:(response)=>{
+           if (response.status==true){
+            $("#districtDiv").load(location.href + " #district");
+            
+       }
+       }
+   })
+}
+
+saveAddress=(userId)=>{
+    alert(userId)
+}

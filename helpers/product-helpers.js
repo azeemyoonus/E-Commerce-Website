@@ -1,5 +1,5 @@
 var db = require('../config/connection')
-var collections = require('../dbHelpers/collections')
+var collections = require('../helpers/collections')
 var objectid = require('mongodb').ObjectID;
 
 module.exports = {

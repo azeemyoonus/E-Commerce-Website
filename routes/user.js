@@ -1,9 +1,10 @@
 var express = require("express");
 var router = express.Router();
-var productHelper = require('../dbHelpers/product-helpers');
-const userhelpers = require("../dbHelpers/userhelpers");
-var userhelper = require('../dbHelpers/userhelpers');
+var productHelper = require('../helpers/product-helpers');
+const userhelpers = require("../helpers/userhelpers");
+var userhelper = require('../helpers/userhelpers');
 var verifyLogin = require('../middleware/userVerifyLogin');
+var userControllers = require('../controllers/userControllers');
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
@@ -69,7 +70,7 @@ router.get('/cart', verifyLogin, (req, res) => {
   userhelper.addToCart(user, req.query.productId).then((response) => {
     // console.log(response);
 
-    res.json({status:true})
+    res.json({ status: true })
 
   })
 })
@@ -79,8 +80,8 @@ router.get('/cartDetails', verifyLogin, async (req, res) => {
   let user = req.session.user
   let products = await userhelper.getCartProdDetails(user._id);
   let totalPrice = await userhelper.totalPrice(user._id);
-  let count= await userhelper.getCartCount(user._id);
-  res.render('user/cart', { user, "cartProducts": products ,totalPrice,count})
+  let count = await userhelper.getCartCount(user._id);
+  res.render('user/cart', { user, "cartProducts": products, totalPrice, count })
 })
 
 router.get('/remove-cart-product/', verifyLogin, async (req, res) => {
@@ -93,15 +94,13 @@ router.get('/remove-cart-product/', verifyLogin, async (req, res) => {
 router.get('/incrementProduct/', verifyLogin, async (req, res) => {
   await userhelpers.incrementProduct(req.query.productId, req.query.value, req.query.userCartID, req.query.currentValue)
     .then((response) => {
-     res.json({status:true})
+      res.json({ status: true })
     })
 
 })
 
-router.get('/place-order', verifyLogin, async(req,res)=>{
-  let totalPrice = await userhelper.totalPrice(user._id);
-  let count= await userhelper.getCartCount(user._id);
-  let products = await userhelper.getCartProdDetails(user._id);
-  res.render('user/order-summary',{"user":req.session.user,totalPrice,count,"cartProducts": products})
-})
+router.get('/place-order', verifyLogin, userControllers.placeOrder)
+
+router.get('/getdistrict', verifyLogin, userControllers.getDistrict)
+
 module.exports = router;
