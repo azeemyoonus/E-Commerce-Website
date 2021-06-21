@@ -1,7 +1,7 @@
 <section id='cart' class="cardcrop bg-light container-fluid" style="padding-top: 4em;padding-bottom:5em;">
 
 
-    <div class="jumbotron col-7 col-md-8 py-2 px-3  ">
+    <div class=" col-7 col-md-8 py-2 px-3  ">
         <div class="card">
             <div class="card-header bg-primary ">
                 <span style="display: inline; background-color:lightskyblue; " class="badge  text-dark">1</span>
@@ -21,45 +21,42 @@
                     <p style="display: inline;" class="text-dark ms-4 ">DELIVERY ADDRESS <i
                             class="bi bi-check2 ps-3 fw-bold "></i></p>
                 </div>
-                <form class="pt-4  row  container ps-5 ms-1  ">
+                <form id='deliveryAddress' method="get" class="pt-4  row  container ps-5 ms-1  ">
                     <div class="form-group  row  ">
                         <div class="form-floating col ">
-
+                            <input type="text" name="userName" value="{{user.user_name}}" hidden>
+                            <input type="text" name="userId" value="{{user._id}}" hidden>
                             <input type="text" class=" bg-light text-dark border-secondary form-control form-control-md"
-                                id="order_name" name="order_name" placeholder="Name" required>
-                            <label for="order_name" class="ms-3 ">Name</label>
+                                id="delivery_name" name="delivery_name" placeholder="Name" required>
+                            <label for="delivery_name" class="ms-3 ">Name</label>
                         </div>
                         <div class="form-floating col ">
-
                             <input type="number"
-                                class="bg-light text-dark border-secondary form-control form-control-md" id="order_name"
-                                name="order_number" placeholder="Phone Number" required>
-                            <label for="order_number" class="ms-3 ">10-digit mobile number</label>
+                                class="bg-light text-dark border-secondary form-control form-control-md"
+                                id="delivery_number" name="delivery_number" placeholder="Phone Number" required>
+                            <label for="delivery_number" class="ms-3 ">10-digit mobile number</label>
                         </div>
                     </div>
 
                     <div class=" mt-3  form-group  row  ">
                         <div class="form-floating col ">
-
-                            <input type="tel" pattern="[0-9]{6}" 
+                            <input type="tel" pattern="[0-9]{6}"
                                 class=" bg-light text-dark border-secondary form-control form-control-md"
-                                id="order_pincode" name="order_name" placeholder="Pincode"  required>                                
-                            <label for="order_pincode" class="ms-3 ">Pincode</label>
+                                id="delivery_pincode" name="delivery_pincode" placeholder="Pincode" required>
+                            <label for="delivery_pincode" class="ms-3 ">Pincode</label>
                         </div>
                         <div class="  form-floating col ">
-
-                            <input type="text"
-                                class="bg-light text-dark border-secondary form-control form-control-md" id="order_name"
-                                name="order_locality" placeholder="Locality" required>
-                            <label for="order_locality" class="ms-3 ">Locality</label>
+                            <input type="text" class="bg-light text-dark border-secondary form-control form-control-md"
+                                id="delivery_locality" name="delivery_locality" placeholder="Locality" required>
+                            <label for="delivery_locality" class="ms-3 ">Locality</label>
                         </div>
                     </div>
                     <div class=" mt-3  form-group  row  ">
                         <div class="form-floating col ">
                             <textarea style="height:9em;"
-                                class="bg-light text-dark border-secondary form-control form-control-md" id="order_name"
-                                name="order_address" placeholder="Address"></textarea>
-                            <label for=" order_address" class="ms-3">Address (area and street)</label>
+                                class="bg-light text-dark border-secondary form-control form-control-md"
+                                id="delivery_area" name="delivery_area" placeholder="Address"></textarea>
+                            <label for="delivery_area" class="ms-3">Address (area and street)</label>
                         </div>
                     </div>
 
@@ -67,7 +64,7 @@
                         <div class="col dropdown btn-group">
 
 
-                            <select onclick="districtSelect(state.value)" id='state'
+                            <select onclick="districtSelect(state.value)" id='state' name="delivery_state"
                                 class="form-select form-control bg-light  form-control-md border-secondary ">
                                 <option disabled selected>State</option>
                                 {{#each stateNames}}
@@ -77,7 +74,7 @@
 
                         </div>
                         <div id='districtDiv' class="col dropdown btn-group">
-                            <select  id='district'
+                            <select id='district' name="delivery_district"
                                 class="form-select form-control bg-light  form-control-md border-secondary ">
                                 <option disabled selected>District</option>
                                 {{#each districtNames}}
@@ -90,18 +87,19 @@
                         <div class="form-floating col ">
 
                             <input type="text" class=" bg-light text-dark border-secondary form-control form-control-md"
-                                id="order_landmark" name="order_landmark" placeholder="Name" required>
-                            <label for="order_landmark" class="ms-3 ">LandMark</label>
+                                id="delivery_landmark" name="delivery_landmark" placeholder="Name" required>
+                            <label for="delivery_landmark" class="ms-3 ">LandMark</label>
                         </div>
                         <div class="form-floating col ">
 
                             <input type="number"
-                                class="bg-light text-dark border-secondary form-control form-control-md" id="order_name"
-                                name="order_altnumber" placeholder="Alternative  Number" required>
-                            <label for="order_altnumber" class="ms-3 ">Alternative Number</label>
+                                class="bg-light text-dark border-secondary form-control form-control-md"
+                                id="delivery_name" name="delivery_altnumber" placeholder="Alternative  Number" required>
+                            <label for="delivery_altnumber" class="ms-3 ">Alternative Number</label>
                         </div>
                     </div>
-                    <div><button onclick="saveAddress('{{user._id}}')" class="mt-4  btn btn-success border-dark ">SAVE AND DELIVER HERE</button></div>
+                    <div><button onclick="saveAddress('{{user._id}}')" class="mt-4  btn btn-success border-dark ">SAVE
+                            AND DELIVER HERE</button></div>
                 </form>
             </div>
 
@@ -147,7 +145,11 @@
                     </div>
 
                     {{/each}}
+                    <div class="float-end py-3 ">
+                        <button onclick="orderSummary('{{user._id}}')" class="btn btn-warning px-3 ">Continue</button>
+                    </div>
                 </div>
+
             </div>
 
         </div>

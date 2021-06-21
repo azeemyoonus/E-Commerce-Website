@@ -45,16 +45,15 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let userHasCart = await db.get().collection(collections.CART_COLLECTIONS).findOne({ userCart_id: objectid(user._id) });
             if (userHasCart) {
-                prodObjExist = userHasCart.products.findIndex(product => product.item == productId)
-                if (prodObjExist != -1) {
-                    db.get().collection(collections.CART_COLLECTIONS).updateOne({ 'products.item': objectid(productId) },
+                prodObjExist = await db.get().collection(collections.CART_COLLECTIONS).findOne({userCart_id:objectid(user._id),  products:{$elemMatch:{item: objectid(productId)}}})
+                if (prodObjExist) {
+                    db.get().collection(collections.CART_COLLECTIONS).updateOne({userCart_id:objectid(user._id), 'products.item': objectid(productId) },
                         {
                             $inc:
                                 { 'products.$.quantity': 1 }
                         }).then((response) => {
                             resolve(response)
-                        })
-                    console.log("prodObjExist")
+                        })                
                 }
                 else {
                     let prodObj = {
@@ -176,7 +175,7 @@ module.exports = {
                 {
                     $unwind: "$products"
                 },
-               
+
                 {
                     $lookup:
                     {
@@ -185,41 +184,56 @@ module.exports = {
                         foreignField: "_id",
                         as: "cartProductDetails"
                     }
-                },  
+                },
                 {
                     $project:
                     {
-                        item:'$products.item',
-                        quantity:'$products.quantity',
-                        product:{$arrayElemAt:["$cartProductDetails",0]}
+                        item: '$products.item',
+                        quantity: '$products.quantity',
+                        product: { $arrayElemAt: ["$cartProductDetails", 0] }
                     }
-                },     
+                },
                 {
                     $project:
                     {
-                        price:{$convert:{input:'$product.product_price',to:'int'}},
-                        item:1,
-                        quantity:1,
-                       
-                    
+                        price: { $convert: { input: '$product.product_price', to: 'int' } },
+                        item: 1,
+                        quantity: 1,
+
+
                     }
                 },
                 {
                     $group:
                     {
-                        _id:null,
-                        total:{$sum:{$multiply:["$quantity","$price"]}}}
+                        _id: null,
+                        total: { $sum: { $multiply: ["$quantity", "$price"] } }
+                    }
                 }
-                
-              
+
+
             ]).toArray()
             resolve(totalPrice[0].total)
         })
     },
-    orderSummary:(userId)=>{
-        return new Promise((resolve,reject)=>{
-            
+    addDeliveryAddress:  (data) => {
+        return new Promise(async (resolve, reject) => {
+            let orderObj = {
+                user_name:data.userName,
+                userId:data.userId,
+                delivery_name: data.delivery_name,
+                delivery_number: data.delivery_number,
+                delivery_pincode: data.delivery_pincode,
+                delivery_locality: data.delivery_locality,
+                delivery_area: data.delivery_area,
+                delivery_state: data.delivery_state,
+                delivery_district: data.delivery_district,
+                delivery_landmark: data.delivery_landmark,
+                delivery_altnumber: data.delivery_altnumber,
+            }
+            await db.get().collection(collections.ORDER_COLLECTIONS).insertOne(orderObj)
         })
+       
     }
 
 

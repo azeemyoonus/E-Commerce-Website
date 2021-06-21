@@ -68,21 +68,13 @@ router.get('/cart', verifyLogin, (req, res) => {
   let user = req.session.user
 
   userhelper.addToCart(user, req.query.productId).then((response) => {
-    // console.log(response);
-
     res.json({ status: true })
 
   })
 })
 
 
-router.get('/cartDetails', verifyLogin, async (req, res) => {
-  let user = req.session.user
-  let products = await userhelper.getCartProdDetails(user._id);
-  let totalPrice = await userhelper.totalPrice(user._id);
-  let count = await userhelper.getCartCount(user._id);
-  res.render('user/cart', { user, "cartProducts": products, totalPrice, count })
-})
+router.get('/cartDetails', verifyLogin, userControllers.cartDetails)
 
 router.get('/remove-cart-product/', verifyLogin, async (req, res) => {
   await userhelpers.removeCartProduct(req.query.productId, req.query.userCartId).then((response) => {
@@ -102,5 +94,7 @@ router.get('/incrementProduct/', verifyLogin, async (req, res) => {
 router.get('/place-order', verifyLogin, userControllers.placeOrder)
 
 router.get('/getdistrict', verifyLogin, userControllers.getDistrict)
+
+router.post('/deliveryAddress', verifyLogin, userControllers.deliveryaddress )
 
 module.exports = router;
