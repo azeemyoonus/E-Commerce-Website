@@ -62,7 +62,7 @@ $("#deliveryAddress").submit((e) => {
     $.ajax({
         url: 'deliveryAddress',
         method: 'post',
-        data:$("#deliveryAddress").serialize(),
+        data: $("#deliveryAddress").serialize(),
         success: (response) => {
             if (response.status) {
                 alert("hi");
@@ -71,6 +71,6 @@ $("#deliveryAddress").submit((e) => {
     })
 })
 
-orderSummary=(userId)=>{
+orderSummary = (userId) => {
     alert(userId)
 }

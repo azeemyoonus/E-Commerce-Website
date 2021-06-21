@@ -45,15 +45,15 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let userHasCart = await db.get().collection(collections.CART_COLLECTIONS).findOne({ userCart_id: objectid(user._id) });
             if (userHasCart) {
-                prodObjExist = await db.get().collection(collections.CART_COLLECTIONS).findOne({userCart_id:objectid(user._id),  products:{$elemMatch:{item: objectid(productId)}}})
+                prodObjExist = await db.get().collection(collections.CART_COLLECTIONS).findOne({ userCart_id: objectid(user._id), products: { $elemMatch: { item: objectid(productId) } } })
                 if (prodObjExist) {
-                    db.get().collection(collections.CART_COLLECTIONS).updateOne({userCart_id:objectid(user._id), 'products.item': objectid(productId) },
+                    db.get().collection(collections.CART_COLLECTIONS).updateOne({ userCart_id: objectid(user._id), 'products.item': objectid(productId) },
                         {
                             $inc:
                                 { 'products.$.quantity': 1 }
                         }).then((response) => {
                             resolve(response)
-                        })                
+                        })
                 }
                 else {
                     let prodObj = {
@@ -216,11 +216,11 @@ module.exports = {
             resolve(totalPrice[0].total)
         })
     },
-    addDeliveryAddress:  (data) => {
+    addDeliveryAddress: (data) => {
         return new Promise(async (resolve, reject) => {
             let orderObj = {
-                user_name:data.userName,
-                userId:data.userId,
+                user_name: data.userName,
+                userId: data.userId,
                 delivery_name: data.delivery_name,
                 delivery_number: data.delivery_number,
                 delivery_pincode: data.delivery_pincode,
@@ -233,7 +233,7 @@ module.exports = {
             }
             await db.get().collection(collections.ORDER_COLLECTIONS).insertOne(orderObj)
         })
-       
+
     }
 
 
