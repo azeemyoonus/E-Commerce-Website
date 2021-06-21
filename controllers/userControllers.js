@@ -40,20 +40,15 @@ exports.userLogin = (req, res) => {
 exports.cartDetails = async (req, res) => {
   let user = req.session.user
   let products = await userhelper.getCartProdDetails(user._id);
-  if (products.length == 0) {
-    res.send('Your cart is empty')
-  }
-  else {
-    let totalPrice = await userhelper.totalPrice(user._id);
-    let count = await userhelper.getCartCount(user._id);
-    res.render('user/cart', { user, "cartProducts": products, totalPrice, count })
-  }
+  totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
+  let count = await userhelper.getCartCount(user._id);
+  res.render('user/cart', { user, "cartProducts": products, totalPrice, count })
 }
 
 exports.placeOrder = async (req, res) => {
-  let totalPrice = await userhelper.totalPrice(user._id);
-  let count = await userhelper.getCartCount(user._id);
   let products = await userhelper.getCartProdDetails(user._id);
+  totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
+  let count = await userhelper.getCartCount(user._id);
   stateNames = await addressFormHelper.states();
   districtNames = addressFormHelper.districtNames();
   res.render('user/order-summary', { "user": req.session.user, totalPrice, count, "cartProducts": products, stateNames, districtNames })
@@ -81,7 +76,6 @@ exports.removeCartProduct = async (req, res) => {
 
 exports.cart = (req, res) => {
   let user = req.session.user
-
   userhelper.addToCart(user, req.query.productId).then((response) => {
     res.json({ status: true })
 

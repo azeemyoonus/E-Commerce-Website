@@ -7,8 +7,12 @@ function removeItem(productId, userCartId, productName, status) {
                 if (response.status) {
                     if (status === 'orderSummary') {
                         $("#orders").load(location.href + " #orderSummary");
+                        $("#cartDetails").load(location.href + " #cartDetails");
                     }
-                    $("#cartDetails").load(location.href + " #cartDetails");
+                    else{
+                    $("#cart").load(location.href + " #cartDetails");
+                    $("#cartPrice").load(location.href + " #cartPrice");
+                    }
                 }
             }
         })
@@ -27,6 +31,7 @@ function incrementPoduct(value, productId, userCartId, currentValue, status) {
                 }
                 else {
                     $("#cart").load(location.href + " #cartDetails");
+                    $("#cartPrice").load(location.href + " #cartPrice");
                 }
             }
 
@@ -71,6 +76,3 @@ $("#deliveryAddress").submit((e) => {
     })
 })
 
-orderSummary = (userId) => {
-    alert(userId)
-}
