@@ -31,4 +31,8 @@ router.get('/getdistrict', verifyLogin, userControllers.getDistrict)
 
 router.post('/deliveryAddress', verifyLogin, userControllers.deliveryaddress)
 
+router.post('/payment', verifyLogin, userControllers.paymentMethod)
+
+router.post("/verifyPayment", verifyLogin, userControllers.verifyPayment);
+
 module.exports = router;

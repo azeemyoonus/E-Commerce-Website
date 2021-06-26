@@ -49,9 +49,11 @@ exports.placeOrder = async (req, res) => {
   let products = await userhelper.getCartProdDetails(user._id);
   totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
   let count = await userhelper.getCartCount(user._id);
+  let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
+  console.log(deliveryAddress);
   stateNames = await addressFormHelper.states();
   districtNames = addressFormHelper.districtNames();
-  res.render('user/order-summary', { "user": req.session.user, totalPrice, count, "cartProducts": products, stateNames, districtNames })
+  res.render('user/order-summary', { "user": req.session.user, totalPrice, count, "cartProducts": products, deliveryAddress, stateNames, districtNames })
 }
 
 exports.getDistrict = async (req, res) => {
@@ -104,11 +106,30 @@ exports.userSignUp_Post = (req, res) => {
   })
 }
 
-exports.deliveryaddress = (req, res) => {
-  userhelpers.addDeliveryAddress(req.body);
+exports.deliveryaddress = async (req, res) => {
+  deliveryAddress = await userhelpers.addDeliveryAddress(req.body);
+  console.log(deliveryAddress)
+  res.json({ status: true, deliveryAddress })
 }
 
 exports.orderSummary = (req, res) => {
   console.log("you reached here");
   res.json({ status: true });
+}
+
+exports.paymentMethod = (req, res) => {
+  if (req.body.paymentMethod == 'OnlinePayment') {
+    userhelper.generateRazorpay(req.body.orderId, req.body.totalPrice).then((paymentOrder) => {
+      res.json({onlinePayment:true,data:paymentOrder})
+    })
+  }
+  else {
+    res.json({cod: true });
+  }
+  
+}
+
+exports.verifyPayment=(req,res)=>{
+  console.log(req.body)
+  // userhelper.verifyPayment(res)
 }

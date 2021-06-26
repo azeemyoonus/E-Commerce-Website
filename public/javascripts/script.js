@@ -9,9 +9,9 @@ function removeItem(productId, userCartId, productName, status) {
                         $("#orders").load(location.href + " #orderSummary");
                         $("#cartDetails").load(location.href + " #cartDetails");
                     }
-                    else{
-                    $("#cart").load(location.href + " #cartDetails");
-                    $("#cartPrice").load(location.href + " #cartPrice");
+                    else {
+                        $("#cart").load(location.href + " #cartDetails");
+                        $("#cartPrice").load(location.href + " #cartPrice");
                     }
                 }
             }
@@ -70,9 +70,93 @@ $("#deliveryAddress").submit((e) => {
         data: $("#deliveryAddress").serialize(),
         success: (response) => {
             if (response.status) {
-                alert("hi");
+                alert('ok added');
+                $("#deliveryAddress").attr("hidden", "true");
             }
         }
     })
 })
 
+orderSummary = () => {
+    $("#paymentMethod").removeAttr("hidden");
+    $("#checkSummary").removeAttr("hidden");
+    $('#orderContinue').attr("hidden", "true");
+}
+
+$('#paymentMethod').submit((e) => {
+    e.preventDefault();
+    $.ajax({
+        url: 'payment',
+        method: 'post',
+        data: $("#paymentMethod").serialize(),
+        success: (response) => {
+            if (response.onlinePayment) {
+
+                razorpay(response.data);
+            }
+            else if (response.cod) {
+
+            }
+        }
+    })
+})
+
+razorpay = (paymentData) => {
+
+    var options = {
+        "key": "rzp_test_kwnIaBUPumh7LR", // Enter the Key ID generated from the Dashboard
+        "amount": parseInt(paymentData.amount + '00'), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "ForShopping",
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": paymentData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+            verifyPayment(response);
+        },
+        "prefill": {
+            "name": "Gaurav Kumar",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9999999999"
+        },
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+    });
+    document.getElementById('payButton').onclick = function (e) {
+        rzp1.open();
+        e.preventDefault();
+    }
+
+}
+verifyPayment = (response) => {
+
+    $.ajax({
+        url:'verifyPayment',
+        method:'post',
+        data:response,
+        success:(response)=>{
+            alert("ok");
+        }
+
+    })
+    // alert(response.razorpay_payment_id);
+    // alert(response.razorpay_order_id);
+    // alert(response.razorpay_signature);
+    
+
+
+}

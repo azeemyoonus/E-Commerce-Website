@@ -3,7 +3,9 @@ var db = require('../config/connection')
 var collection = require('./collections');
 const bcrypt = require('bcrypt');
 const collections = require('./collections');
+var Razorpay= require('razorpay');
 var objectid = require('mongodb').ObjectID;
+var instance = new Razorpay({ key_id: 'rzp_test_kwnIaBUPumh7LR', key_secret: '2KAtQVWDhldMDbwMawG280eN' })
 
 module.exports = {
 
@@ -213,14 +215,16 @@ module.exports = {
 
 
             ]).toArray()
+            
             resolve(totalPrice[0].total)
+           
         })
     },
     addDeliveryAddress: (data) => {
         return new Promise(async (resolve, reject) => {
             let orderObj = {
                 user_name: data.userName,
-                userId: data.userId,
+                userId: objectid(data.userId),
                 delivery_name: data.delivery_name,
                 delivery_number: data.delivery_number,
                 delivery_pincode: data.delivery_pincode,
@@ -231,10 +235,35 @@ module.exports = {
                 delivery_landmark: data.delivery_landmark,
                 delivery_altnumber: data.delivery_altnumber,
             }
-            await db.get().collection(collections.ORDER_COLLECTIONS).insertOne(orderObj)
+            await db.get().collection(collections.ORDER_COLLECTIONS).insertOne(orderObj).then((response) => {
+                resolve(response.ops[0])
+            })
+        })
+
+    },
+    getDeliveryAddress: (userId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.ORDER_COLLECTIONS).findOne({ userId: objectid(userId) }).then((response) => {
+                resolve(response)
+            })
+        })
+    },
+    generateRazorpay:(orderId,totalPrice)=>{
+        return new Promise((resolve,reject)=>{
+            var options = {
+                amount: totalPrice*100,  // amount in the smallest currency unit
+                currency: "INR",
+                receipt: orderId
+              };
+              instance.orders.create(options, function(err, order) {
+                console.log(order);
+                resolve({id:order.id,amount:order.amount});
+              });
+             
         })
 
     }
+
 
 
 
