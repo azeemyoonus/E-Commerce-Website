@@ -81,6 +81,8 @@ orderSummary = () => {
     $("#paymentMethod").removeAttr("hidden");
     $("#checkSummary").removeAttr("hidden");
     $('#orderContinue').attr("hidden", "true");
+    $("#orders").attr("hidden","true");
+    $("#productDetailsFinal").removeAttr("hidden");
 }
 
 $('#paymentMethod').submit((e) => {
