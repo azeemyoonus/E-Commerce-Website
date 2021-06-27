@@ -112,7 +112,7 @@ razorpay = (paymentData) => {
         "image": "https://example.com/your_logo",
         "order_id": paymentData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         "handler": function (response) {
-            verifyPayment(response);
+            verifyPayment(response, paymentData.id);
         },
         "prefill": {
             "name": "Gaurav Kumar",
@@ -142,21 +142,27 @@ razorpay = (paymentData) => {
     }
 
 }
-verifyPayment = (response) => {
+verifyPayment = (response, paymentOrderId) => {
 
     $.ajax({
-        url:'verifyPayment',
-        method:'post',
-        data:response,
-        success:(response)=>{
-            alert("ok");
+        url: 'verifyPayment',
+        method: 'post',
+        data: {
+            response,
+            paymentOrderId
+        },
+        success: (response) => {
+            if (response.payment){
+                alert("payment succefull");
+                //location.href='yourOrders';
+            }
         }
 
     })
     // alert(response.razorpay_payment_id);
     // alert(response.razorpay_order_id);
     // alert(response.razorpay_signature);
-    
+
 
 
 }

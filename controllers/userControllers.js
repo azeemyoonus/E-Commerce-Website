@@ -120,16 +120,23 @@ exports.orderSummary = (req, res) => {
 exports.paymentMethod = (req, res) => {
   if (req.body.paymentMethod == 'OnlinePayment') {
     userhelper.generateRazorpay(req.body.orderId, req.body.totalPrice).then((paymentOrder) => {
-      res.json({onlinePayment:true,data:paymentOrder})
+      res.json({ onlinePayment: true, data: paymentOrder })
     })
   }
   else {
-    res.json({cod: true });
+    res.json({ cod: true });
   }
-  
+
 }
 
-exports.verifyPayment=(req,res)=>{
-  console.log(req.body)
-  // userhelper.verifyPayment(res)
+exports.verifyPayment = (req, res) => {
+  const crypto = require('crypto');
+  let secret = '2KAtQVWDhldMDbwMawG280eN'
+  let generate_signature = crypto.createHmac('sha256', secret)
+    .update(req.body.paymentOrderId+"|"+req.body['response[razorpay_payment_id]'])
+    .digest('hex');
+ if (generate_signature== req.body['response[razorpay_signature]']){
+   res.json({payment:true});
+ }
+  
 }
