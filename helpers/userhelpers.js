@@ -3,7 +3,7 @@ var db = require('../config/connection')
 var collection = require('./collections');
 const bcrypt = require('bcrypt');
 const collections = require('./collections');
-var Razorpay= require('razorpay');
+var Razorpay = require('razorpay');
 var objectid = require('mongodb').ObjectID;
 var instance = new Razorpay({ key_id: 'rzp_test_kwnIaBUPumh7LR', key_secret: '2KAtQVWDhldMDbwMawG280eN' })
 
@@ -215,9 +215,9 @@ module.exports = {
 
 
             ]).toArray()
-            
+
             resolve(totalPrice[0].total)
-           
+
         })
     },
     addDeliveryAddress: (data) => {
@@ -248,21 +248,40 @@ module.exports = {
             })
         })
     },
-    generateRazorpay:(orderId,totalPrice)=>{
-        return new Promise((resolve,reject)=>{
+    generateRazorpay: (orderId, totalPrice) => {
+        return new Promise((resolve, reject) => {
             var options = {
-                amount: totalPrice*100,  // amount in the smallest currency unit
+                amount: totalPrice * 100,  // amount in the smallest currency unit
                 currency: "INR",
                 receipt: orderId
-              };
-              instance.orders.create(options, function(err, order) {
+            };
+            instance.orders.create(options, function (err, order) {
                 console.log(order);
-                resolve({id:order.id,amount:order.amount});
-              });
-             
+                resolve({ id: order.id, amount: order.amount });
+            });
+
         })
 
-    }
+    },
+    addOrderSummary: (id) => {
+        return new Promise(async (resolve, reject) => {
+            productIds = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
+                {
+                    $match: { userCart_id: objectid(id) }
+                },
+                {
+                    $project: {
+                        products:1
+                    }
+
+                },
+                
+
+            ]).toArray()
+            console.log(productIds[0].products);
+            resolve(productIds[0]);
+        })
+    },
 
 
 

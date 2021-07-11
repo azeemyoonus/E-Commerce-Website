@@ -50,10 +50,24 @@ exports.placeOrder = async (req, res) => {
   totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
   let count = await userhelper.getCartCount(user._id);
   let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
+  deliveryAddressStatus = (deliveryAddress) ? deliveryAddressStatus = true : deliveryAddressStatus = false;
   console.log(deliveryAddress);
+  var orderSummary = req.body;
   stateNames = await addressFormHelper.states();
   districtNames = addressFormHelper.districtNames();
-  res.render('user/order-summary', { "user": req.session.user, totalPrice, count, "cartProducts": products, deliveryAddress, stateNames, districtNames })
+  console.log(products);
+  console.log(req.session.user);
+  res.render('user/order-summary', {
+    "user": req.session.user,
+    totalPrice,
+    count,
+    orderSummary,
+    "cartProducts": products,
+    deliveryAddress,
+    stateNames,
+    districtNames,
+    deliveryAddressStatus
+  })
 }
 
 exports.getDistrict = async (req, res) => {
@@ -113,7 +127,8 @@ exports.deliveryaddress = async (req, res) => {
 }
 
 exports.orderSummary = (req, res) => {
-  console.log("you reached here");
+  userhelper.addOrderSummary(req.body.id)
+  // console.log(req.body);
   res.json({ status: true });
 }
 
@@ -133,10 +148,15 @@ exports.verifyPayment = (req, res) => {
   const crypto = require('crypto');
   let secret = '2KAtQVWDhldMDbwMawG280eN'
   let generate_signature = crypto.createHmac('sha256', secret)
-    .update(req.body.paymentOrderId+"|"+req.body['response[razorpay_payment_id]'])
+    .update(req.body.paymentOrderId + "|" + req.body['response[razorpay_payment_id]'])
     .digest('hex');
- if (generate_signature== req.body['response[razorpay_signature]']){
-   res.json({payment:true});
- }
-  
+  if (generate_signature == req.body['response[razorpay_signature]']) {
+    res.json({ payment: true });
+  }
+
+}
+
+exports.yourOrders = (req, res) => {
+
+
 }

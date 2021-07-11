@@ -35,7 +35,7 @@
                     {{/with}}
                 </div>
                 {{else}}
-                <form id='deliveryAddress' method="get" class="pt-4  row  container ps-5 ms-1  ">
+                <form id='deliveryAddress' class="pt-4  row  container ps-5 ms-1  ">
                     <div class="form-group  row  ">
                         <div class="form-floating col ">
                             <input type="text" name="userName" value="{{user.user_name}}" hidden>
@@ -164,10 +164,12 @@
                     </div>
 
                     {{/each}}
-                    <div class="float-end py-3 ">
-                        <button onclick="orderSummary()" id='orderContinue'
-                            class="btn btn-warning px-3 ">Continue</button>
+                     {{#if deliveryAddress}}
+                    <div class="float-end py-3 ">                       
+                        <button onclick="orderSummary('{{user._id}}')" id='orderContinue'
+                            class="btn btn-warning px-3 ">Continue  </button>                            
                     </div>
+                    {{/if}}
                     {{else}}
                     <div>
                         <h4>No products in Your Cart <br> add some products to cart </h4>

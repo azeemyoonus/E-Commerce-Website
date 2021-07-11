@@ -77,12 +77,22 @@ $("#deliveryAddress").submit((e) => {
     })
 })
 
-orderSummary = () => {
-    $("#paymentMethod").removeAttr("hidden");
-    $("#checkSummary").removeAttr("hidden");
-    $('#orderContinue').attr("hidden", "true");
-    $("#orders").attr("hidden","true");
-    $("#productDetailsFinal").removeAttr("hidden");
+orderSummary = (id) => {
+    // $("#paymentMethod").removeAttr("hidden");
+    // $("#checkSummary").removeAttr("hidden");
+    // $('#orderContinue').attr("hidden", "true");
+    // $("#orders").attr("hidden","true");
+    // $("#productDetailsFinal").removeAttr("hidden");
+    alert(id);
+    $.ajax({
+        url:'orderSummary',
+        method:'post',
+        data:{id:id},
+        success:(response)=>{
+            alert("Hi i am here");
+        }
+
+    })
 }
 
 $('#paymentMethod').submit((e) => {
