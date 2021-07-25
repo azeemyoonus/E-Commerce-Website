@@ -89,7 +89,9 @@ orderSummary = (id) => {
         method:'post',
         data:{id:id},
         success:(response)=>{
-            alert("Hi i am here");
+            if (response.status==true){
+            alert("ok Finished");
+            }
         }
 
     })

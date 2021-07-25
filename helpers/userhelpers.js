@@ -265,25 +265,48 @@ module.exports = {
     },
     addOrderSummary: (id) => {
         return new Promise(async (resolve, reject) => {
-            productIds = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
+            products = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
                 {
                     $match: { userCart_id: objectid(id) }
                 },
                 {
                     $project: {
-                        products:1
+                        _id: 0,
+                        products: 1,
                     }
 
-                },
-                
-
+                }
             ]).toArray()
-            console.log(productIds[0].products);
-            resolve(productIds[0]);
+            let productSummary = products[0].products;
+            final = await db.get().collection(collections.ORDER_COLLECTIONS).updateOne(
+                { userId: objectid(id) },
+                { $set: { summary: productSummary } })
+            resolve();
         })
     },
 
+    getSummaryStatus: (id) => {
+        return new Promise(async (resolve, reject) => {
+            status = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+                {
+                    $match: ({ userId: objectid(id) })
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        summary: 1
+                    }
+                }
 
-
+            ]).toArray()
+            console.log("checking summary Status",status);
+            if (status.length!=0){
+                resolve(status=true);                
+            }
+            else{
+                reject(status=false);
+            }            
+        })
+    }
 
 }

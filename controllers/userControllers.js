@@ -49,14 +49,17 @@ exports.placeOrder = async (req, res) => {
   let products = await userhelper.getCartProdDetails(user._id);
   totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
   let count = await userhelper.getCartCount(user._id);
+
   let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
-  deliveryAddressStatus = (deliveryAddress) ? deliveryAddressStatus = true : deliveryAddressStatus = false;
-  console.log(deliveryAddress);
+  await userhelper.getSummaryStatus(req.session.user._id).then((response) => {
+    summaryStatus = true;
+  }).catch((response) => {console.log("summary Status: ", response);
+  summaryStatus = false})
+
+
   var orderSummary = req.body;
   stateNames = await addressFormHelper.states();
   districtNames = addressFormHelper.districtNames();
-  console.log(products);
-  console.log(req.session.user);
   res.render('user/order-summary', {
     "user": req.session.user,
     totalPrice,
@@ -66,7 +69,7 @@ exports.placeOrder = async (req, res) => {
     deliveryAddress,
     stateNames,
     districtNames,
-    deliveryAddressStatus
+    summaryStatus
   })
 }
 
@@ -127,9 +130,11 @@ exports.deliveryaddress = async (req, res) => {
 }
 
 exports.orderSummary = (req, res) => {
-  userhelper.addOrderSummary(req.body.id)
-  // console.log(req.body);
-  res.json({ status: true });
+
+  userhelper.addOrderSummary(req.body.id).then((response) => {
+    res.json({ status: true });
+  })
+
 }
 
 exports.paymentMethod = (req, res) => {
