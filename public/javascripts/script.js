@@ -106,7 +106,9 @@ $("#onlinePayment").click(function () {
 
 cashOnDelivery = () => {
     if (confirm('Continue with cash On Delivery ?')) {
-        alert("Ok");
+        $.ajax({
+            
+        })
     }
 }
 

@@ -162,6 +162,6 @@ exports.verifyPayment = (req, res) => {
 }
 
 exports.yourOrders = (req, res) => {
-
+res.render('user/orders')
 
 }

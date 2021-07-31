@@ -37,6 +37,6 @@ router.post("/verifyPayment", verifyLogin, userControllers.verifyPayment);
 
 router.post("/orderSummary", verifyLogin, userControllers.orderSummary);
 
-// router.get('/yourOrders', verifyLogin, userControllers.yourOrders);
+router.get('/yourOrders', verifyLogin, userControllers.yourOrders);
 
 module.exports = router;
