@@ -9,8 +9,8 @@
                 <br>
             </div>
             <div class="py-3 ">
-                <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-success">{{user.user_name}} </p>
-                <p style="display: inline;" class="ps-2 ms-3   text-dark">YourPhone Number </p>
+                <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-success fw-light">{{user.user_name}} </p>
+                <p style="display: inline;" class="ps-2 ms-3   text-dark fw-light">YourPhone Number </p>
             </div>
 
         </div>
@@ -28,9 +28,9 @@
                 {{#with deliveryAddress }}
                 <div>
                     <div class="py-3 ">
-                        <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark">{{delivery_area}},</p>
-                        <p style="display: inline;" class="ps-2   text-dark"> {{delivery_district}},</p>
-                        <p style="display: inline;" class="ps-2   text-dark"> {{delivery_state}}</p>
+                        <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">{{delivery_area}},</p>
+                        <p style="display: inline;" class="ps-2   text-dark fw-light"> {{delivery_district}},</p>
+                        <p style="display: inline;" class="ps-2   text-dark fw-light"> {{delivery_state}}</p>
                     </div>
                     {{/with}}
                 </div>
@@ -127,15 +127,12 @@
                     {{#if summaryStatus}}<i id='checkSummary' class="bi bi-check2 ps-3 fw-bold "></i>
                     {{/if}}</p><br>
 
-            </div>
-            <div hidden id='productDetailsFinal' class="py-3 ">
-                <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark">{{count}} Items</p>
-            </div>
+            </div>            
             <div id='orders' class="container">
                 <div id="orderSummary">
                     {{#if summaryStatus}}
                     <div class="py-3">
-                        <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark">{{count}} Items</p>
+                        <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">{{count}} Items</p>
                     </div>
 
 
@@ -197,30 +194,39 @@
             </div>
             {{#if summaryStatus}}
             <div>
-                <form class="container pt-4 px-3 " id='paymentMethod'>
+                <div class="container pt-3 ps-5 " id='paymentMethod'>
                     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                    <div class="form-check">
+                    <div id="cashOnDelivery" class="mb-2">
                         {{!-- need to be change --}}
-                        <input type="text" name="totalPrice" value="{{totalPrice}}" hidden>
+                        
+                        {{!-- <input type="text" name="totalPrice" value="{{totalPrice}}" hidden>
                         {{#with deliveryAddress }}
                         <input type="text" name="orderId" value="{{_id}}" hidden>
-                        {{/with }}
-
+                        {{/with }} --}}
                         <input class="form-check-input" type="radio" name="paymentMethod" value="CashOnDelivery"
                             id="cashOnDelivery">
                         <label class="form-check-label" for="cashOnDelivery">
-                            Cash On Delivery
+                            <p style="display: inline;" class="fw-light" >Cash On Delivery</p>
                         </label>
+                        <div id="cashOnDelivery">
+                            <div id="confirmCash" onclick="cashOnDelivery()" class="btn btn-warning mx-5 my-3 " hidden>
+                                <p class="fw-light" style="display: inline;" >Confirm Order</p></div>
+                        </div>
+                        <hr class="mt-3 my-2">
                     </div>
-                    <div class="form-check">
+                    <div id="onlinePayment" class="my-3">
                         <input class="form-check-input" type="radio" name="paymentMethod" value="OnlinePayment"
                             id="onlinePayment">
                         <label class="form-check-label" for="onlinePayment">
-                            Online Payment
+                            <p class="fw-light" style="display: inline;" >BHIM / UPI,  Net Banking,  Credit / Debit,  Others</p>
                         </label>
+                        <div id="onlinePayment">
+                            <div id="confirmOnline" onclick="onlinePayment()" class="btn btn-warning mx-5 my-3 " hidden>
+                                <p class="fw-light" style="display: inline;">Pay Now</p></div>
+                        </div>
                     </div>
-                    <button id='payButton' class="btn btn-primary ms-3  mt-4 ">Pay</button>
-                </form>
+                    {{!-- <button id='payButton' class="btn btn-primary ms-3  mt-4 ">Pay</button> --}}
+                </div>
             </div>
             {{/if}}
         </div>

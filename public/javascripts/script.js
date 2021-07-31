@@ -78,42 +78,63 @@ $("#deliveryAddress").submit((e) => {
 })
 
 orderSummary = (id) => {
-    // $("#paymentMethod").removeAttr("hidden");
-    // $("#checkSummary").removeAttr("hidden");
-    // $('#orderContinue').attr("hidden", "true");
-    // $("#orders").attr("hidden","true");
-    // $("#productDetailsFinal").removeAttr("hidden");
     alert(id);
     $.ajax({
-        url:'orderSummary',
-        method:'post',
-        data:{id:id},
-        success:(response)=>{
-            if (response.status==true){
-            alert("ok Finished");
+        url: 'orderSummary',
+        method: 'post',
+        data: { id: id },
+        success: (response) => {
+            if (response.status == true) {
+                alert("ok Finished");
             }
         }
 
     })
 }
+$("#cashOnDelivery").click(function () {
+    $("#confirmOnline").attr("hidden", true);
+    $('input[id="cashOnDelivery"]').prop('checked', true);
+    $("#confirmCash").removeAttr('hidden');
+});
 
-$('#paymentMethod').submit((e) => {
-    e.preventDefault();
-    $.ajax({
-        url: 'payment',
-        method: 'post',
-        data: $("#paymentMethod").serialize(),
-        success: (response) => {
-            if (response.onlinePayment) {
+$("#onlinePayment").click(function () {
+    $("#confirmCash").attr("hidden", true);
+    $('input[id="onlinePayment"]').prop('checked', true);
+    $("#confirmOnline").removeAttr('hidden');
 
-                razorpay(response.data);
-            }
-            else if (response.cod) {
+});
 
-            }
-        }
-    })
-})
+cashOnDelivery = () => {
+    if (confirm('Continue with cash On Delivery ?')) {
+        alert("Ok");
+    }
+}
+
+onlinePayment = () => {
+    if (confirm('Continue with Online Payment ?')) {       
+        alert("Ok");
+    }
+
+}
+
+
+// $('#paymentMethod').submit((e) => {
+//     e.preventDefault();
+//     $.ajax({
+//         url: 'payment',
+//         method: 'post',
+//         data: $("#paymentMethod").serialize(),
+//         success: (response) => {
+//             if (response.onlinePayment) {
+
+//                 razorpay(response.data);
+//             }
+//             else if (response.cod) {
+
+//             }
+//         }
+//     })
+// })
 
 razorpay = (paymentData) => {
 
@@ -166,7 +187,7 @@ verifyPayment = (response, paymentOrderId) => {
             paymentOrderId
         },
         success: (response) => {
-            if (response.payment){
+            if (response.payment) {
                 alert("payment succefull");
                 //location.href='yourOrders';
             }
