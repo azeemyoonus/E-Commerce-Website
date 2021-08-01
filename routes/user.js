@@ -39,6 +39,6 @@ router.post("/orderSummary", verifyLogin, userControllers.orderSummary);
 
 router.get('/your%20orders', verifyLogin, userControllers.yourOrders);
 
-router.post('/confirmOrder',verifyLogin, userControllers.confirmOrder);
+router.post('/confirm%20order',verifyLogin, userControllers.confirmOrder);
 
 module.exports = router;

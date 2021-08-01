@@ -299,14 +299,52 @@ module.exports = {
                 }
 
             ]).toArray()
-            console.log("checking summary Status",status);
-            if (status.length!=0){
-                resolve(status=true);                
+            console.log("checking summary Status", status);
+            if (status.length != 0) {
+                resolve(status = true);
             }
-            else{
-                reject(status=false);
-            }            
+            else {
+                reject(status = false);
+            }
         })
+    },
+
+    addConfirmation: (id) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.ORDER_COLLECTIONS).updateOne(
+                { userId: objectid(id) },
+                { $set: { paymentType: "Cash On Delivery" } }
+            )
+            resolve()
+        })
+    },
+    getOrdersList: async (id) => {
+        return new Promise(async (resolve, reject) => {
+            paymentType = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+                { $match: { userId: objectid(id) } },
+                {
+                    $project: {
+                        _id: 0,
+                        paymentType: 1,
+                    }
+                }
+            ]).toArray();
+            paymentType = paymentType[0].paymentType
+
+            if (paymentType === 'Cash On Delivery') {
+                console.log("please get my details");
+                 await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+                    { $match: { userId: objectid(id) } },
+                    {
+                        $unwind: "$summary"
+                    }
+                ]).toArray();
+                
+
+            }
+            // resolve()
+        })
+
     }
 
 }
