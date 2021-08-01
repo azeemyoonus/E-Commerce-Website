@@ -104,12 +104,21 @@ $("#onlinePayment").click(function () {
 
 });
 
-cashOnDelivery = () => {
+cashOnDelivery = (data) => {
     if (confirm('Continue with cash On Delivery ?')) {
         $.ajax({
-            
+           url:'/confirmOrder',
+           data:{type:"cash"},
+           method:'post',
+           success: (response)=>{
+                if(response.status=true){
+                    alert("Your order is placed ");
+                    window.location.href = "/your orders";
+                }
+           }
+          
         })
-    }
+    }    
 }
 
 onlinePayment = () => {
@@ -119,6 +128,9 @@ onlinePayment = () => {
 
 }
 
+goToCart=()=>{   
+    window.location.href = '/cartDetails';
+}
 
 // $('#paymentMethod').submit((e) => {
 //     e.preventDefault();

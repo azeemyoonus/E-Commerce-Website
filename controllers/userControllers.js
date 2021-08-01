@@ -2,12 +2,17 @@ var userhelper = require('../helpers/userhelpers');
 var addressFormHelper = require('../helpers/addressFormHelper');
 const userhelpers = require('../helpers/userhelpers');
 var productHelper = require('../helpers/product-helpers');
+const collections = require('../helpers/collections');
 
 
 exports.home = async (req, res, next) => {
   let user = req.session.user
-  productHelper.getProduct().then((products) => {
-    res.render("user/view-products", { products, admin: false, user });
+  productHelper.getProduct().then(async (products) => {
+    if (user) {
+      let count = await userhelper.getCartCount(user._id);
+    }
+    else count = 0;
+    res.render("user/view-products", { products, admin: false, user, count });
   })
 }
 
@@ -53,8 +58,10 @@ exports.placeOrder = async (req, res) => {
   let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
   await userhelper.getSummaryStatus(req.session.user._id).then((response) => {
     summaryStatus = true;
-  }).catch((response) => {console.log("summary Status: ", response);
-  summaryStatus = false})
+  }).catch((response) => {
+    console.log("summary Status: ", response);
+    summaryStatus = false
+  })
 
 
   var orderSummary = req.body;
@@ -161,7 +168,26 @@ exports.verifyPayment = (req, res) => {
 
 }
 
-exports.yourOrders = (req, res) => {
-res.render('user/orders')
+exports.yourOrders = async (req, res) => {
+  let user = req.session.user;
+  let count = await userhelper.getCartCount(user._id);
+  res.render('user/orders', {
+    user,
+    count
+  })
 
+}
+
+exports.confirmOrder = (req, res) => {
+  let type = req.body.type;
+  let user = req.session.user._id;
+  console.log(user);
+  console.log(type);
+  if (type == 'cash') {
+    
+    // res.json({status:true});
+  }
+  else if (type == 'online') {
+
+  }
 }
