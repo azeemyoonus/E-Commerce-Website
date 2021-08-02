@@ -22,7 +22,7 @@ exports.login = (req, res) => {
     res.redirect('/')
   }
   else {
-    res.render('user/user-login', { "loginErr": req.session.loginErr, count:0 })
+    res.render('user/user-login', { "loginErr": req.session.loginErr, count: 0 })
     req.session.loginErr = null;
   }
 }
@@ -180,15 +180,17 @@ exports.yourOrders = async (req, res) => {
 
 exports.confirmOrder = (req, res) => {
   let type = req.body.type;
-  let user = req.session.user._id; 
+  let user = req.session.user._id;
   if (type == 'cash') {
     // adding payment type confirmation
-    userhelper.addConfirmation(user).then(()=>{
+    userhelper.addConfirmation(user).then(() => {
       console.log("confirmation added");
-    }).then(()=>{
-      userhelper.getOrdersList(user);
+    }).then(() => {
+      userhelper.getOrdersList(user)
+    }).then(() => {
+      res.json({ status: true, redirect:'/your orders' });
     })
-    // res.json({status:true});
+
   }
   else if (type == 'online') {
 

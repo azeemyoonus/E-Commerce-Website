@@ -6,6 +6,7 @@ const collections = require('./collections');
 var Razorpay = require('razorpay');
 var objectid = require('mongodb').ObjectID;
 var instance = new Razorpay({ key_id: 'rzp_test_kwnIaBUPumh7LR', key_secret: '2KAtQVWDhldMDbwMawG280eN' })
+var dateFormat = require("dateformat");
 
 module.exports = {
 
@@ -333,16 +334,50 @@ module.exports = {
 
             if (paymentType === 'Cash On Delivery') {
                 console.log("please get my details");
-                 await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+                details = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
                     { $match: { userId: objectid(id) } },
                     {
-                        $unwind: "$summary"
+                        $lookup: {
+                            from: collections.PRODUCT_COLLECTION,
+                            localField: "summary.item",
+                            foreignField: "_id",
+                            as: 'orderedDetails'
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            orderedDetails: 1,
+                        }
                     }
                 ]).toArray();
-                
 
+                var now = new Date();
+                orderedTime = {
+                    day: dateFormat(now,'dd'),
+                    month:dateFormat(now,'mmmm'),
+                    year: dateFormat(now,'yyyy'),
+                    hours: dateFormat(now,'HH'),
+                    minutes: dateFormat(now,'MM'),
+                }
+                var details = {
+                    userId: objectid(id),
+                    orderedTime: orderedTime,
+                    productDetails: details[0].orderedDetails,
+                    status:"Cash On Delivery",
+
+                }            
+                
+                db.get().collection(collections.ORDERED_LIST_COLLECTIONS).insertOne(details).then((data) => {
+                    console.log("succesfully added ");
+                    resolve()
+                })
+
+
+            } else if (paymentType === '') {
+                
             }
-            // resolve()
+            
         })
 
     }
