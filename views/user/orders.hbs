@@ -1,32 +1,36 @@
 <section style="padding-top: 4em;padding-bottom:5em;">
 
-    <div class="mx-5 d-flex flex-column">
-        <div class="card rounded mb-3" style="">
+    <div class="mx-5 d-flex flex-column">      
+        {{#each orderedDetails}}
+        <a href="/cartDetails">
+        <div class="card corner mt-2 shadow mb-3" style="">
             <div class="row no-gutters">
-                <div class="col-md-2">
-                    <img src="..." class="card-img" alt="..." />
+                <div class="mx-2 my-2 col-md-2">
+                    <img src="product-images/{{this._id}}.jpeg" class="card-img" alt="..." height="150px" width="30px" />
                 </div>
                 <div class="col-md-4">
                     <div class="card-body">
-                        <p class="card-text">product Name</p>
+                        <p class="card-text text-dark">{{this.product_name}}</p>
                         <p class="card-text">
-                            <small style='position: absolute; bottom: 0.5em;' class="">Date</small>
+                            <small style='position: absolute; bottom: 0.5em;' class="text-dark">Date</small>
                         </p>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="card-body">
-                        <p class="card-text">Price</p>
+                        <p class="card-text text-dark">{{this.product_price}}</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card-body">
                         
-                        <p class="card-text">status</p>
+                        <p class="card-text text-dark">status</p>
                         <p class="card-text"><small class="text-muted">reason</small></p>
                     </div>
                 </div>
             </div>
         </div>
+        </a>
+        {{/each}}
     </div>
 </section>

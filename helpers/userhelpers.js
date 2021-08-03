@@ -334,12 +334,12 @@ module.exports = {
 
             if (paymentType === 'Cash On Delivery') {
                 console.log("please get my details");
-                details = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
-                    { $match: { userId: objectid(id) } },
+                details = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
+                    { $match: { userCart_id: objectid(id) } },
                     {
                         $lookup: {
                             from: collections.PRODUCT_COLLECTION,
-                            localField: "summary.item",
+                            localField: "products.item",
                             foreignField: "_id",
                             as: 'orderedDetails'
                         }
@@ -347,27 +347,30 @@ module.exports = {
                     {
                         $project: {
                             _id: 0,
-                            orderedDetails: 1,
+                           
                         }
-                    }
+                    },
+                    
                 ]).toArray();
+                console.log('this');
+                console.log(details[0]);
 
                 var now = new Date();
                 orderedTime = {
-                    day: dateFormat(now,'dd'),
-                    month:dateFormat(now,'mmmm'),
-                    year: dateFormat(now,'yyyy'),
-                    hours: dateFormat(now,'HH'),
-                    minutes: dateFormat(now,'MM'),
+                    day: dateFormat(now, 'dd'),
+                    month: dateFormat(now, 'mmmm'),
+                    year: dateFormat(now, 'yyyy'),
+                    hours: dateFormat(now, 'HH'),
+                    minutes: dateFormat(now, 'MM'),
                 }
                 var details = {
                     userId: objectid(id),
                     orderedTime: orderedTime,
                     productDetails: details[0].orderedDetails,
-                    status:"Cash On Delivery",
+                    status: "Cash On Delivery",
 
-                }            
-                
+                }
+
                 db.get().collection(collections.ORDERED_LIST_COLLECTIONS).insertOne(details).then((data) => {
                     console.log("succesfully added ");
                     resolve()
@@ -375,11 +378,27 @@ module.exports = {
 
 
             } else if (paymentType === '') {
-                
+
             }
-            
+
         })
 
+    },
+
+    getorderedDetails: async(id, callback) => {
+        orderedDetails = await db.get().collection(collections.ORDERED_LIST_COLLECTIONS).aggregate([
+            {
+                $match: { userId: objectid(id) }
+            },
+            {
+                $project:
+                {
+                    _id: 0,
+                    productDetails: 1
+                }
+            }
+        ]).toArray()
+        callback(orderedDetails);
     }
 
 }

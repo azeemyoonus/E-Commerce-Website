@@ -66,7 +66,7 @@ exports.placeOrder = async (req, res) => {
 
   var orderSummary = req.body;
   stateNames = await addressFormHelper.states();
-  districtNames = addressFormHelper.districtNames();
+  districtNames = await addressFormHelper.districtNames();
   res.render('user/order-summary', {
     "user": req.session.user,
     totalPrice,
@@ -171,10 +171,16 @@ exports.verifyPayment = (req, res) => {
 exports.yourOrders = async (req, res) => {
   let user = req.session.user;
   let count = await userhelper.getCartCount(user._id);
-  res.render('user/orders', {
-    user,
-    count
+  userhelper.getorderedDetails(user._id, (orderedDetails) => {
+    orderedDetails[0] == null ? orderedDetails = null : orderedDetails = orderedDetails[0].productDetails;
+
+    res.render('user/orders', {
+      user,
+      count,
+      orderedDetails
+    })
   })
+
 
 }
 
@@ -188,7 +194,7 @@ exports.confirmOrder = (req, res) => {
     }).then(() => {
       userhelper.getOrdersList(user)
     }).then(() => {
-      res.json({ status: true, redirect:'/your orders' });
+      res.json({ status: true, redirect: '/your orders' });
     })
 
   }
