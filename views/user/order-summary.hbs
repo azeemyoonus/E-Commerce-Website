@@ -1,255 +1,275 @@
-<section id='cart' class="cardcrop bg-light container-fluid" style="padding-top: 4em;padding-bottom:5em;">
+<div id='cart' class="container-fluid" style="padding-top: 4.5em; padding-bottom: 2em;">
 
+    <div class="row justify-content-start">
 
-    <div class=" col-7 col-md-9 py-2 px-3  ">
-        <div class="card">
-            <div class="card-header bg-primary ">
-                <span style="display: inline; background-color:lightskyblue; " class="badge  text-dark">1</span>
-                <p style="display: inline;" class="text-dark ms-4 ">LOGIN <i class="bi bi-check2 ps-3 fw-bold "></i></p>
-                <br>
-            </div>
-            <div class="py-3 ">
-                <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-success fw-light">{{user.user_name}} </p>
-                <p style="display: inline;" class="ps-2 ms-3   text-dark fw-light">YourPhone Number </p>
-            </div>
-
-        </div>
-        <div class="mt-3 card">
-            <div class="card">
-                <div class="card-header bg-primary ">
-                    <span style="display: inline; background-color:lightskyblue; " class="badge  text-dark">2</span>
-                    <p style="display: inline;" class="text-dark ms-4 ">DELIVERY ADDRESS <i hidden id='checkAddress'
-                            class="bi bi-check2 ps-3 fw-bold "></i></p>
-                </div>
-                {{#if deliveryAddress}}
-                <script>
-                    document.getElementById('checkAddress').removeAttribute('hidden');
-                </script>
-                {{#with deliveryAddress }}
-                <div>
+        <div class="rounded col-9  mb-2">
+            <div class= " mt-3 card border border-secondary corner ">
+                <div class="">
+                    <div class="corner-top py-2 bg-primary ">
+                        <span style="display: inline; background-color:lightskyblue; " class=" ms-3  badge  text-dark">1</span>
+                        <p style="display: inline;" class="text-dark ms-4 ">LOGIN <i
+                                class="bi bi-check2 ps-3 fw-bold "></i>
+                        </p>
+                        <br>
+                    </div>
                     <div class="py-3 ">
-                        <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">{{delivery_area}},</p>
-                        <p style="display: inline;" class="ps-2   text-dark fw-light"> {{delivery_district}},</p>
-                        <p style="display: inline;" class="ps-2   text-dark fw-light"> {{delivery_state}}</p>
+                        <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-success fw-light">{{user.user_name}}
+                        </p>
+                        <p style="display: inline;" class="ps-2 ms-3   text-dark fw-light">YourPhone Number </p>
                     </div>
-                    {{/with}}
                 </div>
-                {{else}}
-                <form id='deliveryAddress' class="pt-4  row  container ps-5 ms-1  ">
-                    <div class="form-group  row  ">
-                        <div class="form-floating col ">
-                            <input type="text" name="userName" value="{{user.user_name}}" hidden>
-                            <input type="text" name="userId" value="{{user._id}}" hidden>
-                            <input type="text" class=" bg-light text-dark border-secondary form-control form-control-md"
-                                id="delivery_name" name="delivery_name" placeholder="Name" required>
-                            <label for="delivery_name" class="ms-3 ">Name</label>
-                        </div>
-                        <div class="form-floating col ">
-                            <input type="number"
-                                class="bg-light text-dark border-secondary form-control form-control-md"
-                                id="delivery_number" name="delivery_number" placeholder="Phone Number" required>
-                            <label for="delivery_number" class="ms-3 ">10-digit mobile number</label>
-                        </div>
-                    </div>
-
-                    <div class=" mt-3  form-group  row  ">
-                        <div class="form-floating col ">
-                            <input type="tel" pattern="[0-9]{6}"
-                                class=" bg-light text-dark border-secondary form-control form-control-md"
-                                id="delivery_pincode" name="delivery_pincode" placeholder="Pincode" required>
-                            <label for="delivery_pincode" class="ms-3 ">Pincode</label>
-                        </div>
-                        <div class="  form-floating col ">
-                            <input type="text" class="bg-light text-dark border-secondary form-control form-control-md"
-                                id="delivery_locality" name="delivery_locality" placeholder="Locality" required>
-                            <label for="delivery_locality" class="ms-3 ">Locality</label>
-                        </div>
-                    </div>
-                    <div class=" mt-3  form-group  row  ">
-                        <div class="form-floating col ">
-                            <textarea style="height:9em;"
-                                class="bg-light text-dark border-secondary form-control form-control-md"
-                                id="delivery_area" name="delivery_area" placeholder="Address"></textarea>
-                            <label for="delivery_area" class="ms-3">Address (area and street)</label>
-                        </div>
-                    </div>
-
-                    <div class=" mt-3  form-group  row  ">
-                        <div class="col dropdown btn-group">
-
-
-                            <select onclick="districtSelect(state.value)" id='state' name="delivery_state"
-                                class="form-select form-control bg-light  form-control-md border-secondary ">
-                                <option disabled selected>State</option>
-                                {{#each stateNames}}
-                                <option value="{{this.code}}" class="text-dark ">{{this.name}}</option>
-                                {{/each}}
-                            </select>
-
-                        </div>
-                        <div id='districtDiv' class="col dropdown btn-group">
-                            <select id='district' name="delivery_district"
-                                class="form-select form-control bg-light  form-control-md border-secondary ">
-                                <option disabled selected>District</option>
-                                {{#each districtNames}}
-                                <option value="{{this}}" class="text-dark ">{{this}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                    <div class=" mt-3  form-group  row  ">
-                        <div class="form-floating col ">
-
-                            <input type="text" class=" bg-light text-dark border-secondary form-control form-control-md"
-                                id="delivery_landmark" name="delivery_landmark" placeholder="Name" required>
-                            <label for="delivery_landmark" class="ms-3 ">LandMark</label>
-                        </div>
-                        <div class="form-floating col ">
-
-                            <input type="number"
-                                class="bg-light text-dark border-secondary form-control form-control-md"
-                                id="delivery_name" name="delivery_altnumber" placeholder="Alternative  Number" required>
-                            <label for="delivery_altnumber" class="ms-3 ">Alternative Number</label>
-                        </div>
-                    </div>
-                    <div>
-                        <button onclick="saveAddress('{{user._id}}')" class="mt-4  btn btn-success border-dark ">SAVE
-                            AND DELIVER HERE</button>
-                    </div>
-                </form>
-                {{/if}}
             </div>
-        </div>
-        <div class="mt-3  card">
-            <div class="card-header bg-primary ">
-                <span style="display: inline; background-color:lightskyblue; " class="badge  text-dark">3</span>
-                <p style="display: inline;" class="text-dark ms-4 ">ORDER SUMMARY
-                    {{#if summaryStatus}}<i id='checkSummary' class="bi bi-check2 ps-3 fw-bold "></i>
-                    {{/if}}</p><br>
-
-            </div>            
-            <div id='orders' class="container">
-                <div id="orderSummary">
-                    {{#if summaryStatus}}
-                    <div class="py-3">
-                        <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">{{count}} Items</p>
+            <div class=" mt-3 card border border-secondary corner ">
+                <div class="">
+                    <div class="corner-top py-2 bg-primary ">
+                        <span style="display: inline; background-color:lightskyblue; " class="ms-3 badge  text-dark">2</span>
+                        <p style="display: inline;" class="text-dark ms-4 ">DELIVERY ADDRESS <i hidden id='checkAddress'
+                                class="bi bi-check2 ps-3 fw-bold "></i></p>
                     </div>
+                    {{#if deliveryAddress}}
+                    <script>
+                        document.getElementById('checkAddress').removeAttribute('hidden');
+                    </script>
+                    {{#with deliveryAddress }}
+                    <div>
+                        <div class="py-3 ">
+                            <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">{{delivery_area}},
+                            </p>
+                            <p style="display: inline;" class="ps-2   text-dark fw-light"> {{delivery_district}},</p>
+                            <p style="display: inline;" class="ps-2   text-dark fw-light"> {{delivery_state}}</p>
+                        </div>
+                        {{/with}}
+                    </div>
+                    {{!-- {{else}} --}}
+                    <form id='deliveryAddress' class="pt-4  row  container ps-5 ms-1  ">
+                        <div class="form-group  row  ">
+                            <div class="form-floating col ">
+                                <input type="text" name="userName" value="{{user.user_name}}" hidden>
+                                <input type="text" name="userId" value="{{user._id}}" hidden>
+                                <input type="text"
+                                    class=" bg-light text-dark border-secondary form-control form-control-md"
+                                    id="delivery_name" name="delivery_name" placeholder="Name" required>
+                                <label for="delivery_name" class="ms-3 ">Name</label>
+                            </div>
+                            <div class="form-floating col ">
+                                <input type="number"
+                                    class="bg-light text-dark border-secondary form-control form-control-md"
+                                    id="delivery_number" name="delivery_number" placeholder="Phone Number" required>
+                                <label for="delivery_number" class="ms-3 ">10-digit mobile number</label>
+                            </div>
+                        </div>
+
+                        <div class=" mt-3  form-group  row  ">
+                            <div class="form-floating col ">
+                                <input type="tel" pattern="[0-9]{6}"
+                                    class=" bg-light text-dark border-secondary form-control form-control-md"
+                                    id="delivery_pincode" name="delivery_pincode" placeholder="Pincode" required>
+                                <label for="delivery_pincode" class="ms-3 ">Pincode</label>
+                            </div>
+                            <div class="  form-floating col ">
+                                <input type="text"
+                                    class="bg-light text-dark border-secondary form-control form-control-md"
+                                    id="delivery_locality" name="delivery_locality" placeholder="Locality" required>
+                                <label for="delivery_locality" class="ms-3 ">Locality</label>
+                            </div>
+                        </div>
+                        <div class=" mt-3  form-group  row  ">
+                            <div class="form-floating col ">
+                                <textarea style="height:9em;"
+                                    class="bg-light text-dark border-secondary form-control form-control-md"
+                                    id="delivery_area" name="delivery_area" placeholder="Address"></textarea>
+                                <label for="delivery_area" class="ms-3">Address (area and street)</label>
+                            </div>
+                        </div>
+
+                        <div class=" mt-3  form-group  row  ">
+                            <div class="col dropdown btn-group">
 
 
-                    {{else}}
-                    {{#if cartProducts }}
-                    {{#each cartProducts }}
+                                <select onclick="districtSelect(state.value)" id='state' name="delivery_state"
+                                    class="form-select form-control bg-light  form-control-md border-secondary ">
+                                    <option disabled selected>State</option>
+                                    {{#each stateNames}}
+                                    <option value="{{this.code}}" class="text-dark ">{{this.name}}</option>
+                                    {{/each}}
+                                </select>
 
-                    <div class="pt-4 ">
-                        <div class="ms-1 me-1 ps-3 pt-3   mb-3 bg-light border border-success  rounded shadow-md   ">
-                            <div id='productDetails' class="py-3  row ">
-                                {{#each cartProductDetails}}
-                                <img style="height: 10rem; width:8rem;" class="col-md-5 mx-auto "
-                                    src="product-images/{{this._id}}.jpeg" alt="product image cap">
-                                <div class=" mx-auto   col-md-7">
-                                    <h5 class=" card-title">{{this.product_name}}</h5>
-                                    <h5 class="card-body"><i class="fa fa-inr"></i> {{this.product_price}}</h5>
-                                </div>
-                                {{/each}}
-                                <div class="pt-3 text-muted">
-                                    <button class="btn btn-muted shadow-none badge  border ms-2 py-1 fw-light text-dark"
-                                        onclick="incrementPoduct(-1,'{{this.products.item}}','{{this.userCart_id}}','{{products.quantity}}','orderSummary')">-</button>
-                                    <span
-                                        class="badge border shadow-none text-dark ms-2 py-1 ">{{products.quantity}}</span>
-                                    <button class="btn btn-muted shadow-none badge border ms-2 py-1 fw-light text-dark "
-                                        onclick="incrementPoduct(1,'{{this.products.item}}','{{this.userCart_id}}','{{products.quantity}}','orderSummary')">+</button>
+                            </div>
+                            <div id='districtDiv' class="col dropdown btn-group">
+                                <select id='district' name="delivery_district"
+                                    class="form-select form-control bg-light  form-control-md border-secondary ">
+                                    <option disabled selected>District</option>
+                                    {{#each districtNames}}
+                                    <option value="{{this}}" class="text-dark ">{{this}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class=" mt-3  form-group  row  ">
+                            <div class="form-floating col ">
 
-                                    <button
-                                        class="btn btn-muted shadow-none badge py-1 border ms-5 py-2 fw-light text-dark"
-                                        onclick="removeItem('{{this.products.item}}','{{this.userCart_id}}',{{#each cartProductDetails}}'{{this.product_name}}'{{/each}},'orderSummary')">Remove</button>
+                                <input type="text"
+                                    class=" bg-light text-dark border-secondary form-control form-control-md"
+                                    id="delivery_landmark" name="delivery_landmark" placeholder="Name" required>
+                                <label for="delivery_landmark" class="ms-3 ">LandMark</label>
+                            </div>
+                            <div class="form-floating col ">
 
+                                <input type="number"
+                                    class="bg-light text-dark border-secondary form-control form-control-md"
+                                    id="delivery_name" name="delivery_altnumber" placeholder="Alternative  Number"
+                                    required>
+                                <label for="delivery_altnumber" class="ms-3 ">Alternative Number</label>
+                            </div>
+                        </div>
+                        <div>
+                            <button onclick="saveAddress('{{user._id}}')"
+                                class="mt-4  btn btn-success border-dark ">SAVE
+                                AND DELIVER HERE</button>
+                        </div>
+                    </form>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="mt-3 card border border-secondary corner">
+                <div class="corner-top py-2 bg-primary ">
+                    <span style="display: inline; background-color:lightskyblue; " class="badge ms-3 text-dark">3</span>
+                    <p style="display: inline;" class="text-dark ms-4 ">ORDER SUMMARY
+                        {{#if summaryStatus}}<i id='checkSummary' class="bi bi-check2 ps-3 fw-bold "></i>
+                        {{/if}}</p><br>
+
+                </div>
+                <div id='orders' class="container">
+                    <div id="orderSummary">
+                        {{#if summaryStatus}}
+                        <div class="py-3">
+                            <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">{{count}} Items</p>
+                        </div>
+
+
+                        {{else}}
+                        {{#if cartProducts }}
+                        {{#each cartProducts }}
+
+                        <div class="pt-4 ">
+                            <div
+                                class="ms-1 me-1 ps-3 pt-3   mb-3 bg-light border border-success  rounded shadow-md   ">
+                                <div id='productDetails' class="py-3  row ">
+                                    {{#each cartProductDetails}}
+                                    <img style="height: 10rem; width:8rem;" class="col-md-5 mx-auto "
+                                        src="product-images/{{this._id}}.jpeg" alt="product image cap">
+                                    <div class=" mx-auto   col-md-7">
+                                        <h5 class=" card-title">{{this.product_name}}</h5>
+                                        <h5 class="card-body"><i class="fa fa-inr"></i> {{this.product_price}}</h5>
+                                    </div>
+                                    {{/each}}
+                                    <div class="pt-3 text-muted">
+                                        <button
+                                            class="btn btn-muted shadow-none badge  border ms-2 py-1 fw-light text-dark"
+                                            onclick="incrementPoduct(-1,'{{this.products.item}}','{{this.userCart_id}}','{{products.quantity}}','orderSummary')">-</button>
+                                        <span
+                                            class="badge border shadow-none text-dark ms-2 py-1 ">{{products.quantity}}</span>
+                                        <button
+                                            class="btn btn-muted shadow-none badge border ms-2 py-1 fw-light text-dark "
+                                            onclick="incrementPoduct(1,'{{this.products.item}}','{{this.userCart_id}}','{{products.quantity}}','orderSummary')">+</button>
+
+                                        <button
+                                            class="btn btn-muted shadow-none badge py-1 border ms-5 py-2 fw-light text-dark"
+                                            onclick="removeItem('{{this.products.item}}','{{this.userCart_id}}',{{#each cartProductDetails}}'{{this.product_name}}'{{/each}},'orderSummary')">Remove</button>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        {{/each}}
+                        {{#if summaryStatus}}
+                        <div class="float-end py-3 ">
+                            <button onclick="orderSummary('{{user._id}}')" id='orderContinue'
+                                class="btn btn-warning px-3 ">Continue </button>
+                        </div>
+                        {{/if}}
+                        {{else}}
+                        <div>
+                            <h4>No products in Your Cart <br> add some products to cart </h4>
+                        </div>
+                        {{/if}}
+                        {{/if}}
                     </div>
 
-                    {{/each}}
-                    {{#if deliveryAddress}}
-                    <div class="float-end py-3 ">
-                        <button onclick="orderSummary('{{user._id}}')" id='orderContinue'
-                            class="btn btn-warning px-3 ">Continue </button>
-                    </div>
-                    {{/if}}
-                    {{else}}
-                    <div>
-                        <h4>No products in Your Cart <br> add some products to cart </h4>
-                    </div>
-                    {{/if}}
-                    {{/if}}
-                </div>
-
-            </div>
-        </div>
-        <div class="mt-3  card">
-            <div class="card-header bg-primary ">
-                <span style="display: inline; background-color:lightskyblue; " class="badge  text-dark">4</span>
-                <p style="display: inline;" class="text-dark ms-4 ">PAYMENT <i hidden id="checkMark"
-                        class="bi bi-check2 ps-3 fw-bold "></i>
-                </p><br>
-            </div>
-            {{#if summaryStatus}}
-            <div>
-                <div class="container pt-3 ps-5 " id='paymentMethod'>
-                    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                    <div id="cashOnDelivery" class="mb-2">
-                        {{!-- need to be change --}}
-                        
-                        {{!-- <input type="text" name="totalPrice" value="{{totalPrice}}" hidden>
-                        {{#with deliveryAddress }}
-                        <input type="text" name="orderId" value="{{_id}}" hidden>
-                        {{/with }} --}}
-                        <input class="form-check-input" type="radio" name="paymentMethod" value="CashOnDelivery"
-                            id="cashOnDelivery">
-                        <label class="form-check-label" for="cashOnDelivery">
-                            <p style="display: inline;" class="fw-light" >Cash On Delivery</p>
-                        </label>
-                        <div id="cashOnDelivery">
-                            <div id="confirmCash" onclick="cashOnDelivery()" class="btn btn-warning mx-5 my-3 " hidden>
-                                <p class="fw-light" style="display: inline;" >Confirm Order</p></div>
-                        </div>
-                        <hr class="mt-3 my-2">
-                    </div>
-                    <div id="onlinePayment" class="my-3">
-                        <input class="form-check-input" type="radio" name="paymentMethod" value="OnlinePayment"
-                            id="onlinePayment">
-                        <label class="form-check-label" for="onlinePayment">
-                            <p class="fw-light" style="display: inline;" >BHIM / UPI,  Net Banking,  Credit / Debit,  Others</p>
-                        </label>
-                        <div id="onlinePayment">
-                            <div id="confirmOnline" onclick="onlinePayment()" class="btn btn-warning mx-5 my-3 " hidden>
-                                <p class="fw-light" style="display: inline;">Pay Now</p></div>
-                        </div>
-                    </div>
-                    {{!-- <button id='payButton' class="btn btn-primary ms-3  mt-4 ">Pay</button> --}}
                 </div>
             </div>
-            {{/if}}
+            <div class="mt-3 card border border-secondary corner">
+                <div class="corner-top py-2 bg-primary">
+                    <span style="display: inline; background-color:lightskyblue; " class="badge ms-3 text-dark">4</span>
+                    <p style="display: inline;" class="text-dark ms-4 ">PAYMENT <i hidden id="checkMark"
+                            class="bi bi-check2 ps-3 fw-bold "></i>
+                    </p><br>
+                </div>
+                {{#if summaryStatus}}
+                <div>
+                    <div class="container pt-3 ps-5 " id='paymentMethod'>
+                        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                        <div id="cashOnDelivery" class="mb-2">
+                            {{!-- need to be change --}}
+
+                            {{!-- <input type="text" name="totalPrice" value="{{totalPrice}}" hidden>
+                            {{#with deliveryAddress }}
+                            <input type="text" name="orderId" value="{{_id}}" hidden>
+                            {{/with }} --}}
+                            <input class="form-check-input" type="radio" name="paymentMethod" value="CashOnDelivery"
+                                id="cashOnDelivery">
+                            <label class="form-check-label" for="cashOnDelivery">
+                                <p style="display: inline;" class="fw-light">Cash On Delivery</p>
+                            </label>
+                            <div id="cashOnDelivery">
+                                <div id="confirmCash" onclick="cashOnDelivery()" class="btn btn-warning mx-5 my-3 "
+                                    hidden>
+                                    <p class="fw-light" style="display: inline;">Confirm Order</p>
+                                </div>
+                            </div>
+                            <hr class="mt-3 my-2">
+                        </div>
+                        <div id="onlinePayment" class="my-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" value="OnlinePayment"
+                                id="onlinePayment">
+                            <label class="form-check-label" for="onlinePayment">
+                                <p class="fw-light" style="display: inline;">BHIM / UPI, Net Banking, Credit / Debit,
+                                    Others
+                                </p>
+                            </label>
+                            <div id="onlinePayment">
+                                <div id="confirmOnline" onclick="onlinePayment()" class="btn btn-warning mx-5 my-3 "
+                                    hidden>
+                                    <p class="fw-light" style="display: inline;">Pay Now</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- <button id='payButton' class="btn btn-primary ms-3  mt-4 ">Pay</button> --}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+
         </div>
 
-    </div>
 
 
 
-    <aside id="cartDetails" class="sidenav col-md-3 pe-2 shadow-sm card" style="float: right ">
-        <div style="" class=" ">
-            <div class="ps-3 pt-3">
+        <div class=" col-3  shadow-sm ">
+            <div class="mt-3 px-2 py-2 card border border-secondary corner">
                 <div class=" row ">
-                    <div class="card border-white ">
-                        <h5 class=" card-header bg-white me-2">Price Details</h5>
+                    <div class="">
+                        <h5 class=" card-header fw-normal bg-white me-2">Price Details</h5>
                         <div class="mt-3">
                             <p style="display: inline;" class="">Price ({{count}}) items </p>
-                            <p style="display: inline;float: right;" class="me-2 text-right text-muted"><i
+                            <p style="display: inline;float: right;" class="me-0 text-right text-muted"><i
                                     class="fa fa-inr"></i> {{totalPrice}} </p>
                         </div>
 
-                        <div>
+                        <div class="mt-3">
                             <p style="display: inline;" class="">Delivery Charges</p>
-                            <p style="display: inline;float: right;" class="me-2 text-right text-success"> Free</p>
+                            <p style="display: inline; float:right;" class="me-0 text-right text-success"> Free</p>
                         </div>
 
                         <hr class="text-dark my-4">
@@ -263,5 +283,8 @@
                 </div>
             </div>
         </div>
-    </aside>
-</section>
+
+
+
+    </div>
+</div>

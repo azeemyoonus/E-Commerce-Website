@@ -7,6 +7,7 @@ var Razorpay = require('razorpay');
 var objectid = require('mongodb').ObjectID;
 var instance = new Razorpay({ key_id: 'rzp_test_kwnIaBUPumh7LR', key_secret: '2KAtQVWDhldMDbwMawG280eN' })
 var dateFormat = require("dateformat");
+const { cartDetails } = require('../controllers/userControllers');
 
 module.exports = {
 
@@ -223,7 +224,7 @@ module.exports = {
     },
     addDeliveryAddress: (data) => {
         return new Promise(async (resolve, reject) => {
-            let orderObj = {
+            let DeliveryAddress = {
                 user_name: data.userName,
                 userId: objectid(data.userId),
                 delivery_name: data.delivery_name,
@@ -236,9 +237,15 @@ module.exports = {
                 delivery_landmark: data.delivery_landmark,
                 delivery_altnumber: data.delivery_altnumber,
             }
-            await db.get().collection(collections.ORDER_COLLECTIONS).insertOne(orderObj).then((response) => {
-                resolve(response.ops[0])
-            })
+
+            await db.get().collection(collections.CART_COLLECTIONS).updateOne(
+                { userCart_id: objectid(data.userId) },
+                { $set: { DeliveryAddress: DeliveryAddress } })
+         resolve()
+            //     await db.get().collection(collections.CART_COLLECTIONS).updateOne(DeliveryAddress).then((response) => {
+            //     resolve(response.ops[0])
+            // })
+
         })
 
     },
@@ -290,7 +297,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             status = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
                 {
-                    $match: ({ userId: objectid(id) })
+                    $match: { userId: objectid(id) }
                 },
                 {
                     $project: {
@@ -300,7 +307,31 @@ module.exports = {
                 }
 
             ]).toArray()
-            console.log("checking summary Status", status);
+
+            var cartDetails = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
+                {
+                    $match: { userCart_id: objectid(id) }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        products: 1
+                    }
+                }
+            ]).toArray();
+            console.log("checking cart details same with summary");
+            console.log(status[0].summary);
+            console.log(cartDetails[0].products);
+
+            status=status[0].summary;
+            cartDetails=cartDetails[0].products;
+            if ({ $setEquals: ["$status", "$cartDetails"] }) {
+                console.log("same");
+            } else {
+                console.log("not same");
+            }
+
+            // console.log("checking summary Status", status);
             if (status.length != 0) {
                 resolve(status = true);
             }
@@ -347,10 +378,10 @@ module.exports = {
                     {
                         $project: {
                             _id: 0,
-                           
+
                         }
                     },
-                    
+
                 ]).toArray();
                 console.log('this');
                 console.log(details[0]);
@@ -385,7 +416,7 @@ module.exports = {
 
     },
 
-    getorderedDetails: async(id, callback) => {
+    getorderedDetails: async (id, callback) => {
         orderedDetails = await db.get().collection(collections.ORDERED_LIST_COLLECTIONS).aggregate([
             {
                 $match: { userId: objectid(id) }

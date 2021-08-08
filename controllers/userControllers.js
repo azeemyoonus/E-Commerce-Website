@@ -54,6 +54,7 @@ exports.placeOrder = async (req, res) => {
   let products = await userhelper.getCartProdDetails(user._id);
   totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
   let count = await userhelper.getCartCount(user._id);
+  
 
   let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
   await userhelper.getSummaryStatus(req.session.user._id).then((response) => {

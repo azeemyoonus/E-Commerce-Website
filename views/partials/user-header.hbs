@@ -7,7 +7,7 @@
           <a style="color: black;" class="   navbar-brand" href="/">Shopping Cart</a>
           {{#if user}}
           <div class="ms-auto  dropdown">
-            <button class="btn btn-secondary btn-sm dropdown-toggle nav-item" type="button" id="dropdownMenu2"
+            <button class="btn corner btn-secondary btn-sm dropdown-toggle nav-item" type="button" id="dropdownMenu2"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Hi, {{user.user_name}}
             </button>
@@ -20,7 +20,7 @@
 
           {{else}}
           <div class="ms-auto  dropdown">
-            <button class="btn btn-sm  btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+            <button class="btn btn-sm corner btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
               Hi, Sign in
             </button>
@@ -35,7 +35,7 @@
 
 
           <div class="  " id="">
-            <button onclick="goToCart()" type="button" class="btn  ms-2  btn-sm btn-secondary position-relative">
+            <button onclick="goToCart()" type="button" class="btn corner ms-2  btn-sm btn-secondary position-relative">
               Cart
               <span class="position-absolute top-0 start-100 translate-middle text-wrap fw-bold text-success border badge rounded-pill bg-light">
                {{count}}
