@@ -67,27 +67,26 @@ exports.placeOrder = async (req, res) => {
 
   // getting delivery address
   let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
-  await userhelper.getSummaryStatus(req.session.user._id).then((response) => {
-    summaryStatus = true;
-  }).catch((response) => {
-    console.log("summary Status: ", response);
-    summaryStatus = false
-  })
+  // await userhelper.getSummaryStatus(req.session.user._id).then((response) => {
+  //   summaryStatus = true;
+  // }).catch((response) => {
+  //   console.log("summary Status: ", response);
+  //   summaryStatus = false
+  // })
 
 
-  var orderSummary = req.body;
+
   stateNames = await addressFormHelper.states();
   districtNames = addressFormHelper.districtNames();
   res.render('user/order-summary', {
     "user": req.session.user,
     totalPrice,
     count,
-    orderSummary,
     "cartProducts": products,
     deliveryAddress,
     stateNames,
     districtNames,
-    summaryStatus
+    
   })
 }
 

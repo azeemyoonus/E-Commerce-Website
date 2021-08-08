@@ -73,7 +73,8 @@ $("#deliveryAddress").submit((e) => {
         data: $("#deliveryAddress").serialize(),
         success: (response) => {
             if (response.status) {
-                alert('ok added');               
+                alert('ok added');   
+                $("#delivery").load(location.href + " #deliveryaddress");            
             }
         }
     })
