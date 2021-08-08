@@ -120,13 +120,20 @@ module.exports = {
         })
     },
     getCartCount: (userId) => {
-        return new Promise(async (resolve, reject) => {
-            let cart = await db.get().collection(collections.CART_COLLECTIONS).findOne({ userCart_id: objectid(userId) })
-            if (cart) {
-                count = cart.products.length
-                resolve(count)
-            }
-
+        return new Promise((resolve, reject) => {
+            db.get().collection(collections.CART_COLLECTIONS).findOne({ userCart_id: objectid(userId) })
+                .then((response) => {
+                    if (response != null) {
+                        count = response.products.length;
+                        resolve(count)
+                    }
+                    else {
+                        resolve(0);
+                    }
+                }).catch((err) => {
+                    count = 0;
+                    reject(err);
+                })
         })
     },
     removeCartProduct: (productId, userId) => {
@@ -225,8 +232,8 @@ module.exports = {
     addDeliveryAddress: (data) => {
         return new Promise(async (resolve, reject) => {
             let DeliveryAddress = {
-                user_name: data.userName,
                 userId: objectid(data.userId),
+                user_name: data.userName,
                 delivery_name: data.delivery_name,
                 delivery_number: data.delivery_number,
                 delivery_pincode: data.delivery_pincode,
@@ -238,20 +245,18 @@ module.exports = {
                 delivery_altnumber: data.delivery_altnumber,
             }
 
-            await db.get().collection(collections.CART_COLLECTIONS).updateOne(
-                { userCart_id: objectid(data.userId) },
-                { $set: { DeliveryAddress: DeliveryAddress } })
-         resolve()
-            //     await db.get().collection(collections.CART_COLLECTIONS).updateOne(DeliveryAddress).then((response) => {
-            //     resolve(response.ops[0])
-            // })
+            await db.get().collection(collections.ADDRESS_COLLECTION).insertOne(DeliveryAddress).then((response) => {
+                resolve(response)
+            }).catch((err) => {
+                reject(err)
+            })
 
         })
 
     },
     getDeliveryAddress: (userId) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collections.ORDER_COLLECTIONS).findOne({ userId: objectid(userId) }).then((response) => {
+            db.get().collection(collections.ADDRESS_COLLECTION).findOne({ userId: objectid(userId) }).then((response) => {
                 resolve(response)
             })
         })
@@ -323,8 +328,8 @@ module.exports = {
             console.log(status[0].summary);
             console.log(cartDetails[0].products);
 
-            status=status[0].summary;
-            cartDetails=cartDetails[0].products;
+            status = status[0].summary;
+            cartDetails = cartDetails[0].products;
             if ({ $setEquals: ["$status", "$cartDetails"] }) {
                 console.log("same");
             } else {

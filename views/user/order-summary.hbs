@@ -3,10 +3,11 @@
     <div class="row justify-content-start">
 
         <div class="rounded col-9  mb-2">
-            <div class= " mt-3 card border border-secondary corner ">
+            <div class=" mt-3 card border border-secondary corner ">
                 <div class="">
                     <div class="corner-top py-2 bg-primary ">
-                        <span style="display: inline; background-color:lightskyblue; " class=" ms-3  badge  text-dark">1</span>
+                        <span style="display: inline; background-color:lightskyblue; "
+                            class=" ms-3  badge  text-dark">1</span>
                         <p style="display: inline;" class="text-dark ms-4 ">LOGIN <i
                                 class="bi bi-check2 ps-3 fw-bold "></i>
                         </p>
@@ -19,17 +20,21 @@
                     </div>
                 </div>
             </div>
+
+            {{!-- Delivery address div --}}
+
             <div class=" mt-3 card border border-secondary corner ">
                 <div class="">
                     <div class="corner-top py-2 bg-primary ">
-                        <span style="display: inline; background-color:lightskyblue; " class="ms-3 badge  text-dark">2</span>
+                        <span style="display: inline; background-color:lightskyblue; "
+                            class="ms-3 badge  text-dark">2</span>
                         <p style="display: inline;" class="text-dark ms-4 ">DELIVERY ADDRESS <i hidden id='checkAddress'
                                 class="bi bi-check2 ps-3 fw-bold "></i></p>
                     </div>
+
+                    {{!-- if the user has delivery addres then it will show here instead of form --}}
+
                     {{#if deliveryAddress}}
-                    <script>
-                        document.getElementById('checkAddress').removeAttribute('hidden');
-                    </script>
                     {{#with deliveryAddress }}
                     <div>
                         <div class="py-3 ">
@@ -40,7 +45,7 @@
                         </div>
                         {{/with}}
                     </div>
-                    {{!-- {{else}} --}}
+                    {{else}}
                     <form id='deliveryAddress' class="pt-4  row  container ps-5 ms-1  ">
                         <div class="form-group  row  ">
                             <div class="form-floating col ">
@@ -123,8 +128,7 @@
                             </div>
                         </div>
                         <div>
-                            <button onclick="saveAddress('{{user._id}}')"
-                                class="mt-4  btn btn-success border-dark ">SAVE
+                            <button class="mt-4  btn btn-success border-dark ">SAVE
                                 AND DELIVER HERE</button>
                         </div>
                     </form>

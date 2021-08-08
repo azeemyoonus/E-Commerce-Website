@@ -8,10 +8,12 @@ function removeItem(productId, userCartId, productName, status) {
                     if (status === 'orderSummary') {
                         $("#orders").load(location.href + " #orderSummary");
                         $("#cartDetails").load(location.href + " #cartDetails");
+                        $("#cartCount").load(location.href + " #cartCount");
                     }
                     else {
                         $("#cart").load(location.href + " #cartDetails");
                         $("#cartPrice").load(location.href + " #cartPrice");
+                        $("#cartCount").load(location.href + " #cartCount");
                     }
                 }
             }
@@ -45,6 +47,7 @@ addToCart = (userId) => {
         success: (response) => {
             if (response.status) {
                 $("#viewProducts").load(location.href + " #products");
+                $("#cartCount").load(location.href + " #cartCount");
             }
         }
     })
@@ -62,16 +65,15 @@ districtSelect = (value) => {
         }
     })
 }
-$("#deliveryAddress").submit((e) => {
+$("#deliveryAddress").submit((e) => {   
     e.preventDefault();
     $.ajax({
-        url: 'deliveryAddress',
+        url: 'addDeliveryAddress',
         method: 'post',
         data: $("#deliveryAddress").serialize(),
         success: (response) => {
             if (response.status) {
-                alert('ok added');
-                $("#deliveryAddress").attr("hidden", "true");
+                alert('ok added');               
             }
         }
     })

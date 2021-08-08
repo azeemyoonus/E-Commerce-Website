@@ -29,7 +29,7 @@ router.get('/place-order', verifyLogin, userControllers.placeOrder)
 
 router.get('/getdistrict', verifyLogin, userControllers.getDistrict)
 
-router.post('/deliveryAddress', verifyLogin, userControllers.deliveryaddress)
+router.post('/addDeliveryAddress', verifyLogin, userControllers.addDeliveryaddress)
 
 router.post('/payment', verifyLogin, userControllers.paymentMethod)
 

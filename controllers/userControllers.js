@@ -9,7 +9,11 @@ exports.home = async (req, res, next) => {
   let user = req.session.user
   productHelper.getProduct().then(async (products) => {
     if (user) {
-      let count = await userhelper.getCartCount(user._id);
+      await userhelper.getCartCount(user._id).then((response) => {
+        count = response;
+      }).catch((err) => {
+        console.log(err);
+      })
     }
     else count = 0;
     res.render("user/view-products", { products, admin: false, user, count });
@@ -46,16 +50,22 @@ exports.cartDetails = async (req, res) => {
   let user = req.session.user
   let products = await userhelper.getCartProdDetails(user._id);
   totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
-  let count = await userhelper.getCartCount(user._id);
+  //getting cart count 
+  await userhelper.getCartCount(user._id).then((response) => {
+    count = response;
+  }).catch((err) => {
+    console.log(err);
+  })
   res.render('user/cart', { user, "cartProducts": products, totalPrice, count })
 }
 
 exports.placeOrder = async (req, res) => {
   let products = await userhelper.getCartProdDetails(user._id);
+  //getting total price of all products in cart .
   totalPrice = (products.length == 0) ? totalPrice = 0 : totalPrice = await userhelper.totalPrice(user._id)
   let count = await userhelper.getCartCount(user._id);
-  
 
+  // getting delivery address
   let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
   await userhelper.getSummaryStatus(req.session.user._id).then((response) => {
     summaryStatus = true;
@@ -67,7 +77,7 @@ exports.placeOrder = async (req, res) => {
 
   var orderSummary = req.body;
   stateNames = await addressFormHelper.states();
-  districtNames = await addressFormHelper.districtNames();
+  districtNames = addressFormHelper.districtNames();
   res.render('user/order-summary', {
     "user": req.session.user,
     totalPrice,
@@ -131,10 +141,9 @@ exports.userSignUp_Post = (req, res) => {
   })
 }
 
-exports.deliveryaddress = async (req, res) => {
+exports.addDeliveryaddress = async (req, res) => {
   deliveryAddress = await userhelpers.addDeliveryAddress(req.body);
-  console.log(deliveryAddress)
-  res.json({ status: true, deliveryAddress })
+  res.json({ status: true })
 }
 
 exports.orderSummary = (req, res) => {
