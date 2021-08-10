@@ -1,13 +1,13 @@
-<section id='cart' class="cardcrop bg-light container-fluid" style="padding-top: 4em;padding-bottom:5em;">
+<div id='cart' class="container-fluid" style="padding-top: 4.5em; padding-bottom: 2em;">
+    <div class="row justify-content-start">
 
-    <div id="cartDetails" class="mt-2  col-7 col-md-8">
-        <div>
-            <div>
+        <div id="cartDetails" class="rounded col-9  mb-2">
+            <div class="">
                 {{#if cartProducts}}
                 {{#each cartProducts }}
 
-                <div class="">
-                    <div class="ms-1 me-1 ps-3  mb-3 bg-light border border-success  rounded shadow-md   ">
+                <div class="mt-3 card border border-secondary corner">
+                    <div class="">
                         <div class="py-3  row ">
                             {{#each cartProductDetails}}
                             <img style="height: 10rem; width:8rem;" class="col-md-5 mx-auto "
@@ -38,37 +38,42 @@
                 {{/if}}
 
             </div>
+
         </div>
-    </div>
-</section>
-<section id="cartPrice" class="sidenav col-md-4 pe-2 shadow-sm" style="float: right ">
-    <div style="price" class=" ">
-        <div class="ps-3 pt-3">
-            <div class=" row ">
-                <div class="card border-white ">
-                    <h5 class=" card-header bg-white me-2">Price Details</h5>
-                    <div class="mt-3">
-                        <p style="display: inline;" class="">Price ({{count}}) items </p>
-                        <p style="display: inline;float: right;" class="me-2 text-right text-muted"><i
-                                class="fa fa-inr"></i> {{totalPrice}} </p>
-                    </div>
 
-                    <div>
-                        <p style="display: inline;" class="">Delivery Charges</p>
-                        <p style="display: inline;float: right;" class="me-2 text-right text-success"> Free</p>
-                    </div>
+        <div id="cartPrice" class=" col-3  shadow-sm" style="float: right ">
+            <div style="price" class="mt-3 px-2 py-2 card border border-secondary corner">
+                <div class="px-3">
+                    <div class=" row ">
+                        <div class="card border-white ">
+                            <h5 class=" card-header bg-white me-2">Price Details</h5>
+                            <div class="mt-3">
+                                <p style="display: inline;" class="">Price ({{count}}) items </p>
+                                <p style="display: inline;float: right;" class="me-2 text-right text-muted"><i
+                                        class="fa fa-inr"></i> {{totalPrice}} </p>
+                            </div>
 
-                    <hr class="text-dark my-4">
-                    <div class="">
-                        <p style="display: inline;" class="text-muted">Total Price</p>
-                        <p style="display: inline-block; float: right;" class="text-muted fw-bolder mt-0 me-auto"><i
-                                class="fa fa-inr"></i> {{totalPrice}}</p>
+                            <div>
+                                <p style="display: inline;" class="">Delivery Charges</p>
+                                <p style="display: inline;float: right;" class="me-2 text-right text-success"> Free</p>
+                            </div>
+
+                            <hr class="text-dark my-4">
+                            <div class="">
+                                <p style="display: inline;" class="text-muted">Total Price</p>
+                                <p style="display: inline-block; float: right;"
+                                    class="text-muted fw-bolder mt-0 me-auto"><i class="fa fa-inr"></i> {{totalPrice}}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="text-center ">
+                <a href="/place-order" class="btn btn-light border-secondary corner my-3 text-center ">Place Order</a>
+            </div>
         </div>
+
+
     </div>
-    <div class="text-center">
-        <a href="/place-order" class="btn btn-success my-3 text-center ">Place Order</a>
-    </div>
-</section>
+</div>
