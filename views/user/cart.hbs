@@ -1,8 +1,8 @@
-<div id='cart' class="container-fluid" style="padding-top: 4.5em; padding-bottom: 2em;">
+<div  class="container-fluid" style="padding-top: 4.5em; padding-bottom: 2em;">
     <div class="row justify-content-start">
 
-        <div id="cartDetails" class="rounded col-9  mb-2">
-            <div class="">
+        <div  id="cart" class="rounded col-9  mb-2">
+            <div id="cartDetails" class="">
                 {{#if cartProducts}}
                 {{#each cartProducts }}
 
@@ -41,36 +41,35 @@
 
         </div>
 
-        <div id="cartPrice" class=" col-3  shadow-sm" style="float: right ">
-            <div style="price" class="mt-3 px-2 py-2 card border border-secondary corner">
-                <div class="px-3">
-                    <div class=" row ">
-                        <div class="card border-white ">
-                            <h5 class=" card-header bg-white me-2">Price Details</h5>
-                            <div class="mt-3">
-                                <p style="display: inline;" class="">Price ({{count}}) items </p>
-                                <p style="display: inline;float: right;" class="me-2 text-right text-muted"><i
-                                        class="fa fa-inr"></i> {{totalPrice}} </p>
-                            </div>
+        <div class=" col-3  shadow-sm ">
+            <div class="mt-3 px-2 py-2 card border border-secondary corner">
+                <div class=" row ">
+                    <div id="cartPrice" class="">
+                        <h5 class=" card-header fw-normal bg-white me-2">Price Details</h5>
+                        <div class="mt-3">
+                            <p style="display: inline;" class="">Price ({{count}}) items </p>
+                            <p style="display: inline;float: right;" class="me-0 text-right text-muted"><i
+                                    class="fa fa-inr"></i> {{totalPrice}} </p>
+                        </div>
 
-                            <div>
-                                <p style="display: inline;" class="">Delivery Charges</p>
-                                <p style="display: inline;float: right;" class="me-2 text-right text-success"> Free</p>
-                            </div>
+                        <div class="mt-3">
+                            <p style="display: inline;" class="">Delivery Charges</p>
+                            <p style="display: inline; float:right;" class="me-0 text-right text-success"> Free</p>
+                        </div>
 
-                            <hr class="text-dark my-4">
-                            <div class="">
-                                <p style="display: inline;" class="text-muted">Total Price</p>
-                                <p style="display: inline-block; float: right;"
-                                    class="text-muted fw-bolder mt-0 me-auto"><i class="fa fa-inr"></i> {{totalPrice}}
-                                </p>
-                            </div>
+                        <hr class="text-dark my-4">
+                        <div class="">
+                            <p style="display: inline;" class="text-muted">Total Price</p>
+                            <p style="display: inline-block; float: right;" class="text-muted fw-bolder mt-0 me-auto"><i
+                                    class="fa fa-inr"></i> {{totalPrice}}
+                            </p>
                         </div>
                     </div>
+                    <div class="text-center ">
+                        <a href="/place-order" class="btn btn-light border-secondary corner my-3 text-center ">Place
+                            Order</a>
+                    </div>
                 </div>
-            </div>
-            <div class="text-center ">
-                <a href="/place-order" class="btn btn-light border-secondary corner my-3 text-center ">Place Order</a>
             </div>
         </div>
 

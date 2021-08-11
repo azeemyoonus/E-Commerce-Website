@@ -23,7 +23,7 @@
 
             {{!-- Delivery address div --}}
 
-            <div id='delivery'class=" mt-3 card border border-secondary corner ">
+            <div id='delivery' class=" mt-3 card border border-secondary corner ">
                 <div id='deliveryaddress' class="">
                     <div class="corner-top py-2 bg-primary ">
                         <span style="display: inline; background-color:lightskyblue; "
@@ -204,11 +204,18 @@
                 </div>
             </div>
             <div class="mt-3 card border border-secondary corner">
-                <div class="corner-top py-2 bg-primary">
-                    <span style="display: inline; background-color:lightskyblue; " class="badge ms-3 text-dark">4</span>
-                    <p style="display: inline;" class="text-dark ms-4 ">PAYMENT <i hidden id="checkMark"
-                            class="bi bi-check2 ps-3 fw-bold "></i>
-                    </p><br>
+                <div class="">
+                    <div class="corner-top py-2 bg-primary">
+                        <span style="display: inline; background-color:lightskyblue; "
+                            class="badge ms-3 text-dark">4</span>
+                        <p style="display: inline;" class="text-dark ms-4 ">PAYMENT <i hidden id="checkMark"
+                                class="bi bi-check2 ps-3 fw-bold "></i>
+                        </p><br>
+
+                    </div>
+                    <div class="py-3 ">                        
+                        <p style="display: inline;" class="ps-2   text-dark fw-light"></p>
+                    </div>
                 </div>
                 {{#if summaryStatus}}
                 <div>
@@ -260,10 +267,10 @@
 
 
 
-        <div class=" col-3  shadow-sm ">
+        <div   class=" col-3  shadow-sm ">
             <div class="mt-3 px-2 py-2 card border border-secondary corner">
                 <div class=" row ">
-                    <div class="">
+                    <div id="cartPrice" class="">
                         <h5 class=" card-header fw-normal bg-white me-2">Price Details</h5>
                         <div class="mt-3">
                             <p style="display: inline;" class="">Price ({{count}}) items </p>

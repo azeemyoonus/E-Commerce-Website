@@ -5,11 +5,16 @@ function removeItem(productId, userCartId, productName, status) {
             method: 'get',
             success: (response) => {
                 if (response.status) {
+                    // checking if it is from order-summarry page 
                     if (status === 'orderSummary') {
+                        // reloading summary section
                         $("#orders").load(location.href + " #orderSummary");
-                        $("#cartDetails").load(location.href + " #cartDetails");
+                        // reloading price details section
+                        $("#cartPrice").load(location.href + " #cartPrice");
+                        // reloading cart count in user header
                         $("#cartCount").load(location.href + " #cartCount");
                     }
+                    // this is of cart page.
                     else {
                         $("#cart").load(location.href + " #cartDetails");
                         $("#cartPrice").load(location.href + " #cartPrice");
@@ -27,12 +32,18 @@ function incrementPoduct(value, productId, userCartId, currentValue, status) {
         method: 'get',
         success: (response) => {
             if (response.status) {
+                // checking if it is from order-summarry page 
                 if (status === "orderSummary") {
+                    // reloading summary section
                     $("#orders").load(location.href + " #orderSummary");
-                    $("#cartDetails").load(location.href + " #cartDetails");
+                    // reloading price details section
+                    $("#cartPrice").load(location.href + " #cartPrice");
                 }
+                // this is of cart page.
                 else {
                     $("#cart").load(location.href + " #cartDetails");
+                    //    $("#cart").load(location.href + " #cart");
+                    // reloading price details section
                     $("#cartPrice").load(location.href + " #cartPrice");
                 }
             }
@@ -65,7 +76,7 @@ districtSelect = (value) => {
         }
     })
 }
-$("#deliveryAddress").submit((e) => {   
+$("#deliveryAddress").submit((e) => {
     e.preventDefault();
     $.ajax({
         url: 'addDeliveryAddress',
@@ -73,8 +84,8 @@ $("#deliveryAddress").submit((e) => {
         data: $("#deliveryAddress").serialize(),
         success: (response) => {
             if (response.status) {
-                alert('ok added');   
-                $("#delivery").load(location.href + " #deliveryaddress");            
+                alert('ok added');
+                $("#delivery").load(location.href + " #deliveryaddress");
             }
         }
     })
