@@ -28,8 +28,11 @@
                     <div class="corner-top py-2 bg-primary ">
                         <span style="display: inline; background-color:lightskyblue; "
                             class="ms-3 badge  text-dark">2</span>
-                        <p style="display: inline;" class="text-dark ms-4 ">DELIVERY ADDRESS <i hidden id='checkAddress'
-                                class="bi bi-check2 ps-3 fw-bold "></i></p>
+                        <p style="display: inline;" class="text-dark ms-4 ">DELIVERY ADDRESS
+                            {{#if deliveryAddress}}
+                            <i id='checkAddress' class="bi bi-check2 ps-3 fw-bold "></i>
+                            {{/if}}
+                        </p>
                     </div>
 
                     {{!-- if the user has delivery addres then it will show here instead of form --}}
@@ -135,16 +138,21 @@
                     {{/if}}
                 </div>
             </div>
-            <div class="mt-3 card border border-secondary corner">
-                <div class="corner-top py-2 bg-primary ">
+
+            {{!-- ordersummary div --}}
+
+            <div id='summary' class="mt-3 card border border-secondary corner">
+                <div id='summary-tick-mark' class="corner-top py-2 bg-primary ">
                     <span style="display: inline; background-color:lightskyblue; " class="badge ms-3 text-dark">3</span>
                     <p style="display: inline;" class="text-dark ms-4 ">ORDER SUMMARY
+                        {{!-- summary status recheck --}}
                         {{#if summaryStatus}}<i id='checkSummary' class="bi bi-check2 ps-3 fw-bold "></i>
                         {{/if}}</p><br>
 
                 </div>
                 <div id='orders' class="container">
                     <div id="orderSummary">
+                        {{#if deliveryAddress}}
                         {{#if summaryStatus}}
                         <div class="py-3">
                             <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">{{count}} Items</p>
@@ -152,8 +160,11 @@
 
 
                         {{else}}
+
                         {{#if cartProducts }}
+
                         {{#each cartProducts }}
+
 
                         <div class="pt-4 ">
                             <div
@@ -187,22 +198,32 @@
                         </div>
 
                         {{/each}}
-                        {{#if summaryStatus}}
+
                         <div class="float-end py-3 ">
-                            <button onclick="orderSummary('{{user._id}}')" id='orderContinue'
-                                class="btn btn-warning px-3 ">Continue </button>
+                            <button onclick='orderSummary()' id='orderContinue'
+                                class="btn btn-light border-secondary corner my-3 text-center ">Continue </button>
                         </div>
-                        {{/if}}
+
                         {{else}}
                         <div>
                             <h4>No products in Your Cart <br> add some products to cart </h4>
                         </div>
                         {{/if}}
                         {{/if}}
+
+
+                       
+                        {{else}}
+                        <div class="py-3">
+                            <p style="display: inline;" class=" pt-3 ms-4 ps-4  text-dark fw-light">Please Provide Your delivery Address</p>
+                        </div>
+                         {{/if}}
+
                     </div>
 
                 </div>
             </div>
+
             <div class="mt-3 card border border-secondary corner">
                 <div class="">
                     <div class="corner-top py-2 bg-primary">
@@ -213,9 +234,11 @@
                         </p><br>
 
                     </div>
-                    <div class="py-3 ">                        
+                    {{#unless summaryStatus}}
+                    <div class="py-3 ">
                         <p style="display: inline;" class="ps-2   text-dark fw-light"></p>
                     </div>
+                    {{/unless}}
                 </div>
                 {{#if summaryStatus}}
                 <div>
@@ -267,7 +290,7 @@
 
 
 
-        <div   class=" col-3  shadow-sm ">
+        <div class=" col-3  shadow-sm ">
             <div class="mt-3 px-2 py-2 card border border-secondary corner">
                 <div class=" row ">
                     <div id="cartPrice" class="">

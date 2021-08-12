@@ -83,26 +83,23 @@ $("#deliveryAddress").submit((e) => {
         method: 'post',
         data: $("#deliveryAddress").serialize(),
         success: (response) => {
-            if (response.status) {
-                alert('ok added');
-                $("#delivery").load(location.href + " #deliveryaddress");
+            if (response.status) {                
+                location.href='/place-order';
             }
         }
     })
 })
 
-orderSummary = (id) => {
-    alert(id);
+orderSummary = () => {
     $.ajax({
         url: 'orderSummary',
         method: 'post',
-        data: { id: id },
         success: (response) => {
-            if (response.status == true) {
-                alert("ok Finished");
+            if (response.status == true) {                
+                location.href='/place-order';
+                
             }
         }
-
     })
 }
 $("#cashOnDelivery").click(function () {

@@ -1,7 +1,9 @@
 var express = require("express");
 var router = express.Router();
-var verifyLogin = require('../middleware/userVerifyLogin');
+var verifyLogin = require('../middleware/user/userVerifyLogin');
+var summaryStatus = require('../middleware/user/summaryStatus')
 var userControllers = require('../controllers/userControllers');
+var getSummaryStatus = require('../middleware/user/getSummaryStatus')
 
 
 /* GET home page. */
@@ -19,13 +21,13 @@ router.get('/signout', userControllers.signOut);
 
 router.get('/cart', verifyLogin, userControllers.cart);
 
-router.get('/cartDetails', verifyLogin, userControllers.cartDetails)
+router.get('/cartDetails', verifyLogin,summaryStatus, userControllers.cartDetails)
 
 router.get('/remove-cart-product/', verifyLogin, userControllers.removeCartProduct)
 
 router.get('/incrementProduct/', verifyLogin, userControllers.incrementProduct);
 
-router.get('/place-order', verifyLogin, userControllers.placeOrder)
+router.get('/place-order',verifyLogin,getSummaryStatus, userControllers.placeOrder)
 
 router.get('/getdistrict', verifyLogin, userControllers.getDistrict)
 

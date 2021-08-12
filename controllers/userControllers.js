@@ -3,6 +3,7 @@ var addressFormHelper = require('../helpers/addressFormHelper');
 const userhelpers = require('../helpers/userhelpers');
 var productHelper = require('../helpers/product-helpers');
 const collections = require('../helpers/collections');
+const summaryStatus = require('../middleware/user/summaryStatus');
 
 
 exports.home = async (req, res, next) => {
@@ -74,11 +75,15 @@ exports.placeOrder = async (req, res) => {
   //   summaryStatus = false
   // })
 
+  // let summaryStatus = await userhelper.getSummaryStatus(req.session.user._id)
+  let summaryStatus = req.dataFromGetsummaryStatus
 
+  console.log(summaryStatus, "summary Status");
 
   stateNames = await addressFormHelper.states();
   districtNames = addressFormHelper.districtNames();
   res.render('user/order-summary', {
+
     "user": req.session.user,
     totalPrice,
     count,
@@ -86,7 +91,8 @@ exports.placeOrder = async (req, res) => {
     deliveryAddress,
     stateNames,
     districtNames,
-    
+    summaryStatus,
+
   })
 }
 
@@ -147,8 +153,24 @@ exports.addDeliveryaddress = async (req, res) => {
 
 exports.orderSummary = (req, res) => {
 
-  userhelper.addOrderSummary(req.body.id).then((response) => {
-    res.json({ status: true });
+  userhelper.addOrderSummary(req.session.user._id).then((response) => {
+    console.log("added order summary in orders collection", response.result);
+  }).then(() => {
+    return userhelper.totalPrice(req.session.user._id)
+  }).then((total) => {
+    return userhelper.addTotalPrice(total, req.session.user._id)
+  }).then((res) => {
+    console.log("added total price in orderes collection", res.result);
+  }).catch((err) => {
+    console.log(err);
+  }).then(() => {
+    return userhelper.addSummaryStatus(req.session.user._id)
+  }).then((res) => {
+    console.log("add summary status true", res.result);
+  }).catch((err) => {
+    console.log("error in adding summary status", err);
+  }).then(() => {
+    res.json({ status: true })
   })
 
 }

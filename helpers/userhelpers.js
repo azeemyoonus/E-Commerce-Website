@@ -7,7 +7,6 @@ var Razorpay = require('razorpay');
 var objectid = require('mongodb').ObjectID;
 var instance = new Razorpay({ key_id: 'rzp_test_kwnIaBUPumh7LR', key_secret: '2KAtQVWDhldMDbwMawG280eN' })
 var dateFormat = require("dateformat");
-const { cartDetails } = require('../controllers/userControllers');
 
 module.exports = {
 
@@ -291,58 +290,39 @@ module.exports = {
                 }
             ]).toArray()
             let productSummary = products[0].products;
-            final = await db.get().collection(collections.ORDER_COLLECTIONS).updateOne(
-                { userId: objectid(id) },
-                { $set: { summary: productSummary } })
-            resolve();
+            console.log(productSummary)
+            let orders = {
+                userId: objectid(id),
+                productSummary: productSummary,
+            }
+            //checking if an user has orders document
+            orderCollection = await db.get().collection(collections.ORDER_COLLECTIONS).findOne({ userId: objectid(id) })
+            if (orderCollection) {
+                await db.get().collection(collections.ORDER_COLLECTIONS).updateOne({ userId: objectid(id) },
+                    { $set: { productSummary: productSummary } }).then((response) => {
+                        resolve(response)
+                    })
+            }
+            else {
+                await db.get().collection(collections.ORDER_COLLECTIONS).insertOne(orders).then((response) => {
+                    resolve(response.ops[0])
+                })
+            }
         })
     },
 
     getSummaryStatus: (id) => {
         return new Promise(async (resolve, reject) => {
-            status = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
-                {
-                    $match: { userId: objectid(id) }
-                },
+            status = await db.get().collection(collection.ORDER_COLLECTIONS).aggregate([
+                { $match: { userId: objectid(id) } },
                 {
                     $project: {
                         _id: 0,
-                        summary: 1
+                        summaryStatus: 1,
                     }
                 }
-
             ]).toArray()
-
-            var cartDetails = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
-                {
-                    $match: { userCart_id: objectid(id) }
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        products: 1
-                    }
-                }
-            ]).toArray();
-            console.log("checking cart details same with summary");
-            console.log(status[0].summary);
-            console.log(cartDetails[0].products);
-
-            status = status[0].summary;
-            cartDetails = cartDetails[0].products;
-            if ({ $setEquals: ["$status", "$cartDetails"] }) {
-                console.log("same");
-            } else {
-                console.log("not same");
-            }
-
-            // console.log("checking summary Status", status);
-            if (status.length != 0) {
-                resolve(status = true);
-            }
-            else {
-                reject(status = false);
-            }
+            resolve(status)
         })
     },
 
@@ -435,6 +415,38 @@ module.exports = {
             }
         ]).toArray()
         callback(orderedDetails);
+    },
+
+    addTotalPrice: (total, id) => {
+        return new Promise(async (resolve, reject) => {
+            console.log(total);
+            let totalPrice = {
+                totalPrice: total,
+            }
+            await db.get().collection(collections.ORDER_COLLECTIONS).updateOne(
+                { userId: objectid(id) },
+                { $set: totalPrice }
+            ).then((response) => {
+                resolve(response)
+            }).catch((err) => {
+                reject(err)
+            })
+        })
+
+
+    },
+
+    addSummaryStatus: (id) => {
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collections.ORDER_COLLECTIONS).updateOne(
+                { userId: objectid(id) },
+                { $set: { summaryStatus: true } }
+            ).then((res) => {
+                resolve(res)
+            }).catch((err) => {
+                reject(err)
+            })
+        })
     }
 
 }
