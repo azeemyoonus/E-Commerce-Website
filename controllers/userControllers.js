@@ -4,6 +4,7 @@ const userhelpers = require('../helpers/userhelpers');
 var productHelper = require('../helpers/product-helpers');
 const collections = require('../helpers/collections');
 const summaryStatus = require('../middleware/user/summaryStatus');
+const { response } = require('express');
 
 
 exports.home = async (req, res, next) => {
@@ -202,15 +203,15 @@ exports.verifyPayment = (req, res) => {
 exports.yourOrders = async (req, res) => {
   let user = req.session.user;
   let count = await userhelper.getCartCount(user._id);
-  userhelper.getorderedDetails(user._id, (orderedDetails) => {
-    orderedDetails[0] == null ? orderedDetails = null : orderedDetails = orderedDetails[0].productDetails;
-
+  userhelper.getorderedDetails(user._id).then((response) => {
     res.render('user/orders', {
       user,
       count,
-      orderedDetails
+      "orderedDetails":response
     })
   })
+
+
 
 
 }
@@ -219,17 +220,18 @@ exports.confirmOrder = (req, res) => {
   let type = req.body.type;
   let user = req.session.user._id;
   if (type == 'cash') {
-    // adding payment type confirmation
+    // adding payment type, ordered date, deliverydate, confirmation 
     userhelper.addConfirmation(user).then(() => {
       console.log("confirmation added");
     }).then(() => {
-      userhelper.getOrdersList(user)
+      return userhelper.clearCart(user)
+    }).then((res) => {
+      console.log("cleared cart", res.result);
     }).then(() => {
-      res.json({ status: true, redirect: '/your orders' });
+      res.json({ status: true, redirect: '/your orders' })
     })
-
   }
   else if (type == 'online') {
-
+    //
   }
 }

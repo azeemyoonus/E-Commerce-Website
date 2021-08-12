@@ -120,19 +120,26 @@ module.exports = {
     },
     getCartCount: (userId) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collections.CART_COLLECTIONS).findOne({ userCart_id: objectid(userId) })
-                .then((response) => {
-                    if (response != null) {
-                        count = response.products.length;
-                        resolve(count)
-                    }
-                    else {
-                        resolve(0);
-                    }
-                }).catch((err) => {
-                    count = 0;
-                    reject(err);
-                })
+            db.get().collection(collections.CART_COLLECTIONS).findOne(
+                {
+                    $and: [
+                        { userCart_id: objectid(userId) },
+                        { products: { $exists: true } }
+                    ]
+                }
+
+            ).then((response) => {                
+                if (response != null) {
+                    count = response.products.length;
+                    resolve(count)
+                }
+                else {
+                    resolve(0);
+                }
+            }).catch((err) => {
+                count = 0;
+                reject(err);
+            })
         })
     },
     removeCartProduct: (productId, userId) => {
@@ -327,10 +334,23 @@ module.exports = {
     },
 
     addConfirmation: (id) => {
-        return new Promise((resolve, reject) => {
-            db.get().collection(collections.ORDER_COLLECTIONS).updateOne(
+        return new Promise(async (resolve, reject) => {
+            // making ordered time
+            var now = new Date();
+            orderedTime = {
+                day: dateFormat(now, 'dd'),
+                month: dateFormat(now, 'mmmm'),
+                year: dateFormat(now, 'yyyy'),
+                hours: dateFormat(now, 'HH'),
+                minutes: dateFormat(now, 'MM'),
+            }
+            paymentAndTime = {
+                orderedTime: orderedTime,
+                paymentType: "Cash On Delivery"
+            }
+            await db.get().collection(collections.ORDER_COLLECTIONS).updateMany(
                 { userId: objectid(id) },
-                { $set: { paymentType: "Cash On Delivery" } }
+                { $set: paymentAndTime },
             )
             resolve()
         })
@@ -401,20 +421,32 @@ module.exports = {
 
     },
 
-    getorderedDetails: async (id, callback) => {
-        orderedDetails = await db.get().collection(collections.ORDERED_LIST_COLLECTIONS).aggregate([
-            {
-                $match: { userId: objectid(id) }
-            },
-            {
-                $project:
+    getorderedDetails: (id) => {
+        return new Promise(async (resolve, reject) => {
+            orderedDetails = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
                 {
-                    _id: 0,
-                    productDetails: 1
+                    $match: { userId: objectid(id) }
+                },
+                {
+                    $lookup:
+                    {
+                        from: collections.PRODUCT_COLLECTION,
+                        localField: "productSummary.item",
+                        foreignField: "_id",
+                        as: "cartProductDetails"
+                    }
+                },
+                {
+                    $project:{
+                        cartProductDetails:1,
+                        _id:0
+                    }
                 }
-            }
-        ]).toArray()
-        callback(orderedDetails);
+            ]).toArray()
+            console.log(orderedDetails[0].cartProductDetails);
+            resolve(orderedDetails[0].cartProductDetails);
+        })
+
     },
 
     addTotalPrice: (total, id) => {
@@ -445,6 +477,21 @@ module.exports = {
                 resolve(res)
             }).catch((err) => {
                 reject(err)
+            })
+        })
+    },
+
+    clearCart: (id) => {
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collections.CART_COLLECTIONS).updateOne(
+                {
+                    userCart_id: objectid(id)
+                },
+                {
+                    $unset: { products: "" }
+                }
+            ).then((res) => {
+                resolve(res)
             })
         })
     }

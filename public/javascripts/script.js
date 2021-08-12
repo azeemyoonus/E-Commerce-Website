@@ -51,9 +51,9 @@ function incrementPoduct(value, productId, userCartId, currentValue, status) {
         }
     })
 }
-addToCart = (userId) => {
+addToCart = (productId) => {
     $.ajax({
-        url: 'cart?productId=' + userId,
+        url: 'cart?productId=' + productId,
         method: 'get',
         success: (response) => {
             if (response.status) {

@@ -243,8 +243,25 @@
                 {{#if summaryStatus}}
                 <div>
                     <div class="container pt-3 ps-5 " id='paymentMethod'>
-                        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                        <div id="cashOnDelivery" class="mb-2">
+                        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>                    
+                        
+                        <div id="onlinePayment" class="mb-2">
+                            <input class="form-check-input" type="radio" name="paymentMethod" value="OnlinePayment"
+                                id="onlinePayment">
+                            <label class="form-check-label" for="onlinePayment">
+                                <p class="fw-light" style="display: inline;">BHIM / UPI, Net Banking, Credit / Debit,
+                                    Others
+                                </p>
+                            </label>
+                            <div id="onlinePayment">
+                                <div id="confirmOnline" onclick="onlinePayment()" class="btn btn-warning mx-5 my-3 "
+                                    hidden>
+                                    <p class="fw-light" style="display: inline;">Pay Now</p>
+                                </div>
+                            </div>
+                             <hr class="mt-3 my-2">
+                        </div>
+                        <div id="cashOnDelivery" class="my-3">
                             {{!-- need to be change --}}
 
                             {{!-- <input type="text" name="totalPrice" value="{{totalPrice}}" hidden>
@@ -262,22 +279,7 @@
                                     <p class="fw-light" style="display: inline;">Confirm Order</p>
                                 </div>
                             </div>
-                            <hr class="mt-3 my-2">
-                        </div>
-                        <div id="onlinePayment" class="my-3">
-                            <input class="form-check-input" type="radio" name="paymentMethod" value="OnlinePayment"
-                                id="onlinePayment">
-                            <label class="form-check-label" for="onlinePayment">
-                                <p class="fw-light" style="display: inline;">BHIM / UPI, Net Banking, Credit / Debit,
-                                    Others
-                                </p>
-                            </label>
-                            <div id="onlinePayment">
-                                <div id="confirmOnline" onclick="onlinePayment()" class="btn btn-warning mx-5 my-3 "
-                                    hidden>
-                                    <p class="fw-light" style="display: inline;">Pay Now</p>
-                                </div>
-                            </div>
+                           
                         </div>
                         {{!-- <button id='payButton' class="btn btn-primary ms-3  mt-4 ">Pay</button> --}}
                     </div>
