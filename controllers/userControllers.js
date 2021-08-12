@@ -211,9 +211,6 @@ exports.yourOrders = async (req, res) => {
     })
   })
 
-
-
-
 }
 
 exports.confirmOrder = (req, res) => {
@@ -228,7 +225,7 @@ exports.confirmOrder = (req, res) => {
     }).then((res) => {
       console.log("cleared cart", res.result);
     }).then(() => {
-      res.json({ status: true, redirect: '/your orders' })
+      res.json({ status: true, redirect: '/your%20orders' })
     })
   }
   else if (type == 'online') {

@@ -128,7 +128,7 @@ module.exports = {
                     ]
                 }
 
-            ).then((response) => {                
+            ).then((response) => {
                 if (response != null) {
                     count = response.products.length;
                     resolve(count)
@@ -428,6 +428,9 @@ module.exports = {
                     $match: { userId: objectid(id) }
                 },
                 {
+                    $unwind: "$productSummary"
+                },              
+                {
                     $lookup:
                     {
                         from: collections.PRODUCT_COLLECTION,
@@ -437,14 +440,17 @@ module.exports = {
                     }
                 },
                 {
-                    $project:{
-                        cartProductDetails:1,
-                        _id:0
+                    $project: {
+                        cartProductDetails: 1,
+                        _id: 0,
+                        orderedTime: 1,
+                        cartProductDetails: 1,
+                        "productSummary.quantity": 1,
                     }
                 }
             ]).toArray()
-            console.log(orderedDetails[0].cartProductDetails);
-            resolve(orderedDetails[0].cartProductDetails);
+            console.log(orderedDetails);
+            resolve(orderedDetails);
         })
 
     },
