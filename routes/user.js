@@ -33,7 +33,7 @@ router.get('/getdistrict', verifyLogin, userControllers.getDistrict)
 
 router.post('/addDeliveryAddress', verifyLogin, userControllers.addDeliveryaddress)
 
-router.post('/payment', verifyLogin, userControllers.paymentMethod)
+router.post('/payment', verifyLogin, userControllers.onlinePayment)
 
 router.post("/verifyPayment", verifyLogin, userControllers.verifyPayment);
 

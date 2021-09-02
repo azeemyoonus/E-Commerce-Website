@@ -6,7 +6,8 @@ module.exports = {
     CART_COLLECTIONS: 'cart',
     ORDER_COLLECTIONS: 'order',
     ORDERED_LIST_COLLECTIONS:'orderedItems',
-    ADDRESS_COLLECTION:'DeliveryAddresses'
+    ADDRESS_COLLECTION:'DeliveryAddresses',
+    ORDERED_HISTORY:'OrderedHistory'
 
 
 }

@@ -176,15 +176,23 @@ exports.orderSummary = (req, res) => {
 
 }
 
-exports.paymentMethod = (req, res) => {
-  if (req.body.paymentMethod == 'OnlinePayment') {
-    userhelper.generateRazorpay(req.body.orderId, req.body.totalPrice).then((paymentOrder) => {
-      res.json({ onlinePayment: true, data: paymentOrder })
-    })
-  }
-  else {
-    res.json({ cod: true });
-  }
+exports.onlinePayment = (req, res) => {
+  console.log("reached ");
+  userhelper.totalPrice(req.session.user._id).then((total) => {
+    return userhelper.generateRazorpay(req.session.user._id, total)
+  }).then((response) => {
+    console.log("generated receipt", response);
+    res.json({ status: true, data: response });
+  }).catch((err) => {
+    console.error("error in generating receipt", err);
+  })
+
+  // userhelper.totalPrice().then((total) => {
+  //   userhelper.generateRazorpay(req.body.orderId, req.body.total)
+  // })
+
+  // .then((paymentOrder) => {
+  //   res.json({ onlinePayment: true, data: paymentOrder })
 
 }
 
@@ -207,8 +215,10 @@ exports.yourOrders = async (req, res) => {
     res.render('user/orders', {
       user,
       count,
-      "orderedDetails":response
+      "orderedDetails": response
     })
+  }).catch((err)=>{
+    res.send(err);
   })
 
 }
@@ -224,6 +234,10 @@ exports.confirmOrder = (req, res) => {
       return userhelper.clearCart(user)
     }).then((res) => {
       console.log("cleared cart", res.result);
+    }).then(() => {
+     return userhelper.ordersToOrderHistory(user)
+    }).then((response) => {
+      console.log("added to ordered History", response.result);
     }).then(() => {
       res.json({ status: true, redirect: '/your%20orders' })
     })

@@ -1,39 +1,38 @@
-<section style="padding-top: 4em;padding-bottom:5em;">
-
+<div style="padding-top: 4em;padding-bottom:5em;">
+{{#each orderedDetails}}
+    {{#each productSummary}}
     <div class="mx-5 d-flex flex-column">
-        {{#each orderedDetails}}
-        {{#each cartProductDetails}}
-        <a href="/cartDetails?id={{_id}}">
+
+
+        <a href="/cartDetails?id={{productDetails._id}}">
             <div class="card corner mt-2 shadow mb-3" style="">
                 <div class="row no-gutters">
+
                     <div class="px-3 my-2 col-md-2">
-                        <img src="product-images/{{_id}}.jpeg" class="card-img" alt="..." height="150px" width="30px" />
-                        {{/each}}
+
+                        <img src="product-images/{{productDetails._id}}.jpeg" class="card-img" alt="..." height="150px"
+                            width="30px" />
+
                     </div>
                     {{!-- name and quantity --}}
                     <div class="col-md-4">
                         <div class="card-body">
-                            {{#each cartProductDetails}}
-
-                            <p class="card-text fw-normal text-dark">{{product_name}}</p>
-                            {{/each}}
-                            {{#with productSummary}}
+                            <p class="card-text fw-normal text-dark"> {{productDetails.product_name}} </p>
                             <p class="card-text fw-light text-dark" style="display: inline;">Quantity: </p>
                             <p class="card-text fw-normal text-muted" style="display: inline;">
-                                {{quantity}}</p>
-                            {{/with}}
-
-
+                                {{productCount.quantity}}                                
+                            </p>
                         </div>
                     </div>
-                    {{!-- rate  --}}
+
+                    {{!-- rate --}}
                     <div class="col-md-2">
                         <div class="card-body ">
-                            {{#each cartProductDetails}}
+
                             <p class="card-text fw-light text-dark " style="display: inline;">Rate :</p>
                             <p class="card-text fw-light text-muted" style="display: inline;">
-                                {{product_price}}</p>
-                            {{/each}}
+                                {{productDetails.product_price}}      
+
 
                         </div>
                     </div>
@@ -41,14 +40,14 @@
                     <div class="col-md-4">
                         <div class="card-body">
 
-                            <p class="card-text fw-light text-dark">status</p>
-                            <p style="display:inline" class="card-text text-muted fw-light">Ordered On </p>
-                            {{#with orderedTime}}
+                            <p class="card-text fw-light text-dark">{{../paymentType}}</p>
+                            <p style="display:inline" class="card-text text-muted fw-light">Ordered On :</p>
+                            {{#with ../orderedTime}}
                             <p style="display: inline;" class="card-text text-muted fw-light">
                                 {{this.day}}
                                 {{this.month}}
                                 {{this.year}}
-                                {{this.hours}}:
+                                {{this.hours}} :
                                 {{this.minutes}}
                             </p>
                             {{/with}}
@@ -57,6 +56,8 @@
                 </div>
             </div>
         </a>
-        {{/each}}
+
     </div>
-</section>
+    {{/each}}
+{{/each}}
+</div>

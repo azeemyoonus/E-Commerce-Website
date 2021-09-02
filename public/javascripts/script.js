@@ -135,6 +135,17 @@ cashOnDelivery = (data) => {
 onlinePayment = () => {
     if (confirm('Continue with Online Payment ?')) {
         alert("Ok");
+        $.ajax({
+            url:'/payment',
+            method: 'post',
+            success:(response)=>{
+                if (response.status ==true){
+                    alert(response);
+                    razorpay(response.data)
+                }
+            }
+        })
+        
     }
 
 }
@@ -196,10 +207,10 @@ razorpay = (paymentData) => {
         alert(response.error.metadata.order_id);
         alert(response.error.metadata.payment_id);
     });
-    document.getElementById('payButton').onclick = function (e) {
-        rzp1.open();
-        e.preventDefault();
-    }
+    // document.getElementById('payButton').onclick = function (e) {
+    //     rzp1.open();
+    //     e.preventDefault();
+    // }
 
 }
 verifyPayment = (response, paymentOrderId) => {
