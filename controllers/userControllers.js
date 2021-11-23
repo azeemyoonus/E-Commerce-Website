@@ -5,6 +5,7 @@ var productHelper = require('../helpers/product-helpers');
 const collections = require('../helpers/collections');
 const summaryStatus = require('../middleware/user/summaryStatus');
 const { response } = require('express');
+const session = require('express-session');
 
 
 exports.home = async (req, res, next) => {
@@ -176,35 +177,34 @@ exports.orderSummary = (req, res) => {
 
 }
 
-exports.onlinePayment = (req, res) => {
-  console.log("reached ");
+exports.onlinePayment = (req, res) => {  
   userhelper.totalPrice(req.session.user._id).then((total) => {
-    return userhelper.generateRazorpay(req.session.user._id, total)
+    return userhelper.generateRazorpay(req.session.user._id, total, req.session.user._id)
   }).then((response) => {
     console.log("generated receipt", response);
-    res.json({ status: true, data: response });
+    res.json({ status: true, data: response,user: req.session.user });
   }).catch((err) => {
     console.error("error in generating receipt", err);
   })
-
-  // userhelper.totalPrice().then((total) => {
-  //   userhelper.generateRazorpay(req.body.orderId, req.body.total)
+  // .then(()=>{
+  //   return userhelper.clearCart(user)
+  // }).then((res)=>{
+  //   console.log("cart Cleared",res.result);
+  // }).then(() => {
+  //   return userhelper.ordersToOrderHistory(user)
+  // }).then((response) => {
+  //   console.log("added to ordered History", response.result);
+  // }).then(() => {
+  //   res.json({ status: true, redirect: '/your%20orders' })
   // })
-
-  // .then((paymentOrder) => {
-  //   res.json({ onlinePayment: true, data: paymentOrder })
 
 }
 
 exports.verifyPayment = (req, res) => {
-  const crypto = require('crypto');
-  let secret = '2KAtQVWDhldMDbwMawG280eN'
-  let generate_signature = crypto.createHmac('sha256', secret)
-    .update(req.body.paymentOrderId + "|" + req.body['response[razorpay_payment_id]'])
-    .digest('hex');
-  if (generate_signature == req.body['response[razorpay_signature]']) {
-    res.json({ payment: true });
-  }
+
+  userhelper.verifyPayment(req.body).then((response)=>{
+    res.send({response});
+  })
 
 }
 
@@ -217,7 +217,7 @@ exports.yourOrders = async (req, res) => {
       count,
       "orderedDetails": response
     })
-  }).catch((err)=>{
+  }).catch((err) => {
     res.send(err);
   })
 
@@ -235,7 +235,7 @@ exports.confirmOrder = (req, res) => {
     }).then((res) => {
       console.log("cleared cart", res.result);
     }).then(() => {
-     return userhelper.ordersToOrderHistory(user)
+      return userhelper.ordersToOrderHistory(user)
     }).then((response) => {
       console.log("added to ordered History", response.result);
     }).then(() => {

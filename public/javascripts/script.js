@@ -115,6 +115,10 @@ $("#onlinePayment").click(function () {
 
 });
 
+goToCart = () => {   
+    window.location.href = '/cartDetails';
+}
+
 cashOnDelivery = (data) => {
     if (confirm('Continue with cash On Delivery ?')) {
         $.ajax({
@@ -133,15 +137,14 @@ cashOnDelivery = (data) => {
 }
 
 onlinePayment = () => {
-    if (confirm('Continue with Online Payment ?')) {
-        alert("Ok");
+    if (confirm('Continue with Online Payment ?')) {         
         $.ajax({
             url:'/payment',
             method: 'post',
             success:(response)=>{
-                if (response.status ==true){
-                    alert(response);
-                    razorpay(response.data)
+                if (response.status ==true){                    
+                    console.log(response);
+                    razorpay(response.data, response.user)
                 }
             }
         })
@@ -150,9 +153,7 @@ onlinePayment = () => {
 
 }
 
-goToCart = () => {
-    window.location.href = '/cartDetails';
-}
+
 
 // $('#paymentMethod').submit((e) => {
 //     e.preventDefault();
@@ -172,49 +173,41 @@ goToCart = () => {
 //     })
 // })
 
-razorpay = (paymentData) => {
+razorpay = (paymentData, userdata) => {
+
+    // <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     var options = {
         "key": "rzp_test_kwnIaBUPumh7LR", // Enter the Key ID generated from the Dashboard
         "amount": parseInt(paymentData.amount + '00'), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         "currency": "INR",
-        "name": "ForShopping",
+        "name": "Phone Gallery",
         "description": "Test Transaction",
         "image": "https://example.com/your_logo",
-        "order_id": paymentData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "order_id":paymentData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         "handler": function (response) {
             verifyPayment(response, paymentData.id);
         },
         "prefill": {
-            "name": "Gaurav Kumar",
+            "name": userdata.user_name,
             "email": "gaurav.kumar@example.com",
-            "contact": "9999999999"
+            "contact": "81658083322"
         },
         "notes": {
             "address": "Razorpay Corporate Office"
         },
         "theme": {
-            "color": "#3399cc"
+            "color": "#3399cf"
+        },
+        "retry":{
+            "max_count":4,
         }
     };
     var rzp1 = new Razorpay(options);
-    rzp1.on('payment.failed', function (response) {
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
-    });
-    // document.getElementById('payButton').onclick = function (e) {
-    //     rzp1.open();
-    //     e.preventDefault();
-    // }
-
+        rzp1.open();
 }
-verifyPayment = (response, paymentOrderId) => {
 
+verifyPayment = (response, paymentOrderId) => {
     $.ajax({
         url: 'verifyPayment',
         method: 'post',
@@ -223,9 +216,12 @@ verifyPayment = (response, paymentOrderId) => {
             paymentOrderId
         },
         success: (response) => {
-            if (response.payment) {
+            if (response.response.payment==true) {
                 alert("payment succefull");
-                //location.href='yourOrders';
+                location.href='yourOrders';
+            }
+            else{
+                alert("Payment unsuccessfull");
             }
         }
 
@@ -233,7 +229,9 @@ verifyPayment = (response, paymentOrderId) => {
     // alert(response.razorpay_payment_id);
     // alert(response.razorpay_order_id);
     // alert(response.razorpay_signature);
+}
 
 
-
+item=()=>{
+    alert("Hello");
 }

@@ -8,6 +8,7 @@ var objectid = require('mongodb').ObjectID;
 var instance = new Razorpay({ key_id: 'rzp_test_kwnIaBUPumh7LR', key_secret: '2KAtQVWDhldMDbwMawG280eN' })
 var dateFormat = require("dateformat");
 const { orderSummary } = require('../controllers/userControllers');
+const { on } = require('events');
 
 module.exports = {
 
@@ -268,20 +269,36 @@ module.exports = {
             })
         })
     },
-    generateRazorpay: (orderId, totalPrice) => {
-        return new Promise((resolve, reject) => {
+
+    generateRazorpay: (orderId, totalPrice, id) => {
+        return new Promise(async (resolve, reject) => {
+            pendingTransaction = await db.get().collection(collections.PAYMENT_COLLECTION).findOne({
+                receipt: id
+            })        
+            console.log("Pending transaction :",pendingTransaction);
             var options = {
                 amount: totalPrice * 100,  // amount in the smallest currency unit
                 currency: "INR",
                 receipt: orderId
             };
-            instance.orders.create(options, function (err, order) {
-                console.log(order);
-                resolve({ id: order.id, amount: order.amount });
-            });
-
+            if(pendingTransaction!=null){                
+                if (pendingTransaction.amount_paid == pendingTransaction.amount_paid) {
+                    console.log("want to make a payment");                    
+                    instance.orders.create(options, async function (err, order) {
+                        console.log(order);
+                        await db.get().collection(collections.PAYMENT_COLLECTION).insertOne(order);
+                        resolve({ id: order.id, amount: order.amount });
+                    });
+                }               
+            }
+            else{               
+                instance.orders.create(options, async function (err, order) {
+                    console.log(order);
+                    await db.get().collection(collections.PAYMENT_COLLECTION).insertOne(order);
+                    resolve({ id: order.id, amount: order.amount });
+                });
+            }    
         })
-
     },
     addOrderSummary: (id) => {
         return new Promise(async (resolve, reject) => {
@@ -449,7 +466,7 @@ module.exports = {
 
     getorderedDetails: (id) => {
         return new Promise(async (resolve, reject) => {
-        
+
             productDetails = await db.get().collection(collections.ORDERED_HISTORY).aggregate([
                 { $match: { _id: objectid(id) } },
                 {
@@ -459,7 +476,6 @@ module.exports = {
                     }
                 }
             ]).toArray()
-            console.log(productDetails[0].orders)
             resolve(productDetails[0].orders);
         })
 
@@ -520,15 +536,15 @@ module.exports = {
                 productDetails = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
                     { $match: { userId: objectid(id) } },
                     {
-                        $project:{
-                            _id:0,
-                            userId:0,
+                        $project: {
+                            _id: 0,
+                            userId: 0,
                         }
                     }
 
                 ]).toArray()
                 productDetails = productDetails[0]
-               
+
                 await db.get().collection(collections.ORDERED_HISTORY).updateOne(
                     {
                         _id: objectid(id)
@@ -570,6 +586,33 @@ module.exports = {
                     })
             }
 
+        })
+    },
+    verifyPayment: (paymentData) => {
+        return new Promise(async (resolve, reject) => {
+            const crypto = require('crypto');
+            let secret = '2KAtQVWDhldMDbwMawG280eN'
+            let generate_signature = crypto.createHmac('sha256', secret)
+                .update(paymentData.paymentOrderId + "|" + paymentData['response[razorpay_payment_id]'])
+                .digest('hex');
+            if (generate_signature == paymentData['response[razorpay_signature]']) {
+                console.log("your payment data", paymentData);
+
+                // updating databse with amount paid
+                making=await db.get().collection(collections.PAYMENT_COLLECTION).aggregate([
+                    {
+                        $match: {
+                            id: paymentData['response[razorpay_order_id]']
+                        }
+                    },
+                    {
+                        $set: { amount_paid: '$amount_due' }
+                    },      
+                    {$merge:"Payments"}
+                ]).toArray()                             
+                resolve({ payment: true })
+            
+            }
         })
     }
 

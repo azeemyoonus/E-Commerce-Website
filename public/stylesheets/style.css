@@ -16,7 +16,7 @@ h2, h4, p, h3, h6, body,a  {
   border-radius: 12px 12px 0px 0px;
 }
 a{
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .corner-below{
