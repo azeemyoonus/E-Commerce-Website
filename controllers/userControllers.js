@@ -177,15 +177,24 @@ exports.orderSummary = (req, res) => {
 
 }
 
-exports.onlinePayment = (req, res) => {  
-  userhelper.totalPrice(req.session.user._id).then((total) => {
+exports.onlinePayment = async (req, res) => {
+
+  return userhelper.totalPrice(req.session.user._id).then((total) => {
     return userhelper.generateRazorpay(req.session.user._id, total, req.session.user._id)
   }).then((response) => {
     console.log("generated receipt", response);
-    res.json({ status: true, data: response,user: req.session.user });
+    res.json({ status: true, data: response, user: req.session.user });
   }).catch((err) => {
     console.error("error in generating receipt", err);
   })
+  // userhelper.totalPrice(req.session.user._id).then((total) => {
+  //   return userhelper.generateRazorpay(req.session.user._id, total, req.session.user._id)
+  // }).then((response) => {
+  //   console.log("generated receipt", response);
+  //   res.json({ status: true, data: response,user: req.session.user });
+  // }).catch((err) => {
+  //   console.error("error in generating receipt", err);
+  // })
   // .then(()=>{
   //   return userhelper.clearCart(user)
   // }).then((res)=>{
@@ -197,13 +206,30 @@ exports.onlinePayment = (req, res) => {
   // }).then(() => {
   //   res.json({ status: true, redirect: '/your%20orders' })
   // })
+}
 
+exports.afterPayment = (req, res) => {
+  let user = req.session.user._id;
+
+  userhelper.addConfirmation(req.session.user._id, 'online').then(() => {
+    return userhelper.totalPrice(req.session.user._id)
+  }).then(() => {
+    return userhelper.clearCart(user)
+  }).then((res) => {
+    console.log("Cart Cleared", res.result);
+  }).then(() => {
+    return userhelper.ordersToOrderHistory(user).then((res) => {
+      console.log("added to ordered History", res.result)
+    }).then(()=>{
+      res.json({status:true, redirect:'/your%20orders'})
+    })
+  })
 }
 
 exports.verifyPayment = (req, res) => {
 
-  userhelper.verifyPayment(req.body).then((response)=>{
-    res.send({response});
+  userhelper.verifyPayment(req.body).then((response) => {
+    res.send({ response });
   })
 
 }
@@ -211,6 +237,7 @@ exports.verifyPayment = (req, res) => {
 exports.yourOrders = async (req, res) => {
   let user = req.session.user;
   let count = await userhelper.getCartCount(user._id);
+  console.log("hello");
   userhelper.getorderedDetails(user._id).then((response) => {
     res.render('user/orders', {
       user,
@@ -228,7 +255,7 @@ exports.confirmOrder = (req, res) => {
   let user = req.session.user._id;
   if (type == 'cash') {
     // adding payment type, ordered date, deliverydate, confirmation 
-    userhelper.addConfirmation(user).then(() => {
+    userhelper.addConfirmation(user, 'cash').then(() => {
       console.log("confirmation added");
     }).then(() => {
       return userhelper.clearCart(user)

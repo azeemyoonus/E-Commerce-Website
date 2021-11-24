@@ -145,6 +145,7 @@ onlinePayment = () => {
                 if (response.status ==true){                    
                     console.log(response);
                     razorpay(response.data, response.user)
+
                 }
             }
         })
@@ -153,30 +154,7 @@ onlinePayment = () => {
 
 }
 
-
-
-// $('#paymentMethod').submit((e) => {
-//     e.preventDefault();
-//     $.ajax({
-//         url: 'payment',
-//         method: 'post',
-//         data: $("#paymentMethod").serialize(),
-//         success: (response) => {
-//             if (response.onlinePayment) {
-
-//                 razorpay(response.data);
-//             }
-//             else if (response.cod) {
-
-//             }
-//         }
-//     })
-// })
-
 razorpay = (paymentData, userdata) => {
-
-    // <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
     var options = {
         "key": "rzp_test_kwnIaBUPumh7LR", // Enter the Key ID generated from the Dashboard
         "amount": parseInt(paymentData.amount + '00'), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -218,17 +196,25 @@ verifyPayment = (response, paymentOrderId) => {
         success: (response) => {
             if (response.response.payment==true) {
                 alert("payment succefull");
-                location.href='yourOrders';
+                $.ajax({
+                    url:'/afterPayment',
+                    method:'get',
+                    success:(response)=>{
+                        if (response.status==true){
+                            alert("hi i am here");
+                            window.location.href=response.redirect;
+                        }
+                        
+                    }
+
+                })
             }
             else{
                 alert("Payment unsuccessfull");
             }
         }
 
-    })
-    // alert(response.razorpay_payment_id);
-    // alert(response.razorpay_order_id);
-    // alert(response.razorpay_signature);
+    })  
 }
 
 

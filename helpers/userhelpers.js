@@ -376,7 +376,7 @@ module.exports = {
         })
     },
 
-    addConfirmation: (id) => {
+    addConfirmation: (id, type) => {
         return new Promise(async (resolve, reject) => {
             // making ordered time
             var now = new Date();
@@ -387,10 +387,19 @@ module.exports = {
                 hours: dateFormat(now, 'HH'),
                 minutes: dateFormat(now, 'MM'),
             }
-            paymentAndTime = {
-                orderedTime: orderedTime,
-                paymentType: "Cash On Delivery"
+            if(type=='online'){
+                paymentAndTime = {
+                    orderedTime: orderedTime,                
+                    paymentType: "Online Payment"
+                }
             }
+            else if (type =='cash'){
+                paymentAndTime = {
+                    orderedTime: orderedTime,                
+                    paymentType: "Paid"
+                }
+            }
+            
             await db.get().collection(collections.ORDER_COLLECTIONS).updateMany(
                 { userId: objectid(id) },
                 { $set: paymentAndTime },

@@ -35,6 +35,8 @@ router.post('/addDeliveryAddress', verifyLogin, userControllers.addDeliveryaddre
 
 router.post('/payment', verifyLogin, userControllers.onlinePayment)
 
+router.get('/afterPayment', verifyLogin, userControllers.afterPayment);
+
 router.post("/verifyPayment", verifyLogin, userControllers.verifyPayment);
 
 router.post("/orderSummary", verifyLogin, userControllers.orderSummary);
