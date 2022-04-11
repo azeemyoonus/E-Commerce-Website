@@ -6,6 +6,7 @@ var hbs = require('express-handlebars');
 var fileUpload = require('express-fileupload');
 var db = require('./config/connection');
 var session = require('express-session');
+var bodyparser = require('body-parser');
 
 var adminRouter = require('./routes/admin');
 var userRouter = require('./routes/user');
@@ -17,13 +18,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: __dirname + '/views/layout/layout', layoutsDir: __dirname + '/views/layout/', partialsDir: __dirname + '/views/partials' }));
 
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileUpload())
-app.use((session({secret:'secretkey'})))
+app.use(fileUpload());
+// Use body-parser to parse incoming data
+app.use(bodyparser.urlencoded({extended : true})) 
+app.use((session({
+  secret: 'secretkey',
+  resave: false,
+  saveUninitialized: true, 
+  cookie: {
+    maxAge: 1000 * 60 *10
+  },
+})))
 
 
 db.connect((db_name) => {

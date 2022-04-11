@@ -61,7 +61,7 @@ addToCart = (productId) => {
                 $("#cartCount").load(location.href + " #cartCount");
             }
         }
-    })
+        })
 }
 
 districtSelect = (value) => {
@@ -115,7 +115,7 @@ $("#onlinePayment").click(function () {
 
 });
 
-goToCart = () => {   
+goToCart = () => {  
     window.location.href = '/cartDetails';
 }
 

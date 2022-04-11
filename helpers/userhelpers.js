@@ -118,6 +118,8 @@ module.exports = {
                 }
             ]).toArray()
             resolve(cartProductDetails)
+        }).catch((err) => {
+            reject(err);
         })
     },
     getCartCount: (userId) => {
@@ -215,7 +217,7 @@ module.exports = {
                 {
                     $project:
                     {
-                        price: { $convert: { input: '$product.product_price', to: 'int' } },
+                        price: { $convert: { input: '$product.product_price', to: 'int' ,onError: '',onNull: '' } },
                         item: 1,
                         quantity: 1,
 
@@ -274,30 +276,30 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             pendingTransaction = await db.get().collection(collections.PAYMENT_COLLECTION).findOne({
                 receipt: id
-            })        
-            console.log("Pending transaction :",pendingTransaction);
+            })
+            console.log("Pending transaction :", pendingTransaction);
             var options = {
                 amount: totalPrice * 100,  // amount in the smallest currency unit
                 currency: "INR",
                 receipt: orderId
             };
-            if(pendingTransaction!=null){                
+            if (pendingTransaction != null) {
                 if (pendingTransaction.amount_paid == pendingTransaction.amount_paid) {
-                    console.log("want to make a payment");                    
+                    console.log("want to make a payment");
                     instance.orders.create(options, async function (err, order) {
                         console.log(order);
                         await db.get().collection(collections.PAYMENT_COLLECTION).insertOne(order);
                         resolve({ id: order.id, amount: order.amount });
                     });
-                }               
+                }
             }
-            else{               
+            else {
                 instance.orders.create(options, async function (err, order) {
                     console.log(order);
                     await db.get().collection(collections.PAYMENT_COLLECTION).insertOne(order);
                     resolve({ id: order.id, amount: order.amount });
                 });
-            }    
+            }
         })
     },
     addOrderSummary: (id) => {
@@ -387,19 +389,19 @@ module.exports = {
                 hours: dateFormat(now, 'HH'),
                 minutes: dateFormat(now, 'MM'),
             }
-            if(type=='online'){
+            if (type == 'online') {
                 paymentAndTime = {
-                    orderedTime: orderedTime,                
+                    orderedTime: orderedTime,
                     paymentType: "Online Payment"
                 }
             }
-            else if (type =='cash'){
+            else if (type == 'cash') {
                 paymentAndTime = {
-                    orderedTime: orderedTime,                
+                    orderedTime: orderedTime,
                     paymentType: "Paid"
                 }
             }
-            
+
             await db.get().collection(collections.ORDER_COLLECTIONS).updateMany(
                 { userId: objectid(id) },
                 { $set: paymentAndTime },
@@ -608,7 +610,7 @@ module.exports = {
                 console.log("your payment data", paymentData);
 
                 // updating databse with amount paid
-                making=await db.get().collection(collections.PAYMENT_COLLECTION).aggregate([
+                making = await db.get().collection(collections.PAYMENT_COLLECTION).aggregate([
                     {
                         $match: {
                             id: paymentData['response[razorpay_order_id]']
@@ -616,11 +618,11 @@ module.exports = {
                     },
                     {
                         $set: { amount_paid: '$amount_due' }
-                    },      
-                    {$merge:"Payments"}
-                ]).toArray()                             
+                    },
+                    { $merge: "Payments" }
+                ]).toArray()
                 resolve({ payment: true })
-            
+
             }
         })
     }

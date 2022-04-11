@@ -18,7 +18,34 @@ h2, h4, p, h3, h6, body,a  {
 a{
   text-decoration: none !important;
 }
+a:link {
+  color: black;
+}
+a:visited {
+  color: black;
+}
+a:hover {
+  color: black;
+}
+a:active {
+  color: black;
+}
+
+.hover:hover {
+  background-color: rgb(250, 250, 250) ;
+}
 
 .corner-below{
   border-radius: 0px 0px 12px 12px;
+}
+.dropdown-menu{
+  border-color: rgb(182, 181, 179) !important;
+  margin-top: 0.74rem;
+  width: auto !important;
+  height: auto !important;
+}
+
+.border_top{
+  border-top: 1px solid darkgrey;
+  border-radius: 0 !important;
 }

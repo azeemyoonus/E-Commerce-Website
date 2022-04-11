@@ -1,4 +1,5 @@
 var producthelper = require('../helpers/product-helpers');
+const compress_images = require("compress-images");
 
 exports.home = (req, res, next) => {
 
@@ -11,14 +12,42 @@ exports.addProduct_get = (req, res) => {
     res.render('admin/add-products');
 }
 
-exports.addProduct_post = (req, res) => {
+exports.addProduct_post = async (req, res) => {
+
+
+    // INPUT_path_to_your_images,
+    //     OUTPUT_path;
+    // INPUT_path_to_your_images = "src/img/**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}";
+    // OUTPUT_path = "build/img/";
+
+
+
     producthelper.addProduct(req.body, (id) => {
         let image = req.files.product_photo;
         image.mv("./public/product-images/" + id + ".jpeg", (err) => {
-            if (!err) console.log("no error")
+            if (!err) {
+                console.log("no error");
+                compress_images("./public/product-images/" + id + ".jpeg", "./public/product-images/" + id + ".jpg", { compress_force: false, statistic: true, autoupdate: true }, false,
+                { jpg: { engine: "mozjpeg", command: ["-quality", "60"] } },
+                // { png: { engine: "pngquant", command: ["--quality=20-50", "-o"] } },
+                // { svg: { engine: "svgo", command: "--multipass" } },
+                // { gif: { engine: "gifsicle", command: ["--colors", "64", "--use-col=web"] } },
+                function (error, completed, statistic) {
+                    // console.log("-------------");
+                    // console.log(error);
+                    // console.log(completed);
+                    // console.log(statistic);
+                    // console.log("-------------");
+                }
+            );
+            res.redirect("/admin");
+            
+            }
             else console.log("error in photo :" + err)
         })
-        res.redirect("/admin");
+        
+       
+
     });
 
 }

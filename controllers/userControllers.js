@@ -29,7 +29,8 @@ exports.login = (req, res) => {
     res.redirect('/')
   }
   else {
-    res.render('user/user-login', { "loginErr": req.session.loginErr, count: 0 })
+    console.log("hello>")
+    res.render('user/user-login', { "loginErr": req.session.loginErr})
     req.session.loginErr = null;
   }
 }
@@ -70,14 +71,7 @@ exports.placeOrder = async (req, res) => {
 
   // getting delivery address
   let deliveryAddress = await userhelper.getDeliveryAddress(req.session.user._id)
-  // await userhelper.getSummaryStatus(req.session.user._id).then((response) => {
-  //   summaryStatus = true;
-  // }).catch((response) => {
-  //   console.log("summary Status: ", response);
-  //   summaryStatus = false
-  // })
 
-  // let summaryStatus = await userhelper.getSummaryStatus(req.session.user._id)
   let summaryStatus = req.dataFromGetsummaryStatus
 
   console.log(summaryStatus, "summary Status");
@@ -178,7 +172,6 @@ exports.orderSummary = (req, res) => {
 }
 
 exports.onlinePayment = async (req, res) => {
-
   return userhelper.totalPrice(req.session.user._id).then((total) => {
     return userhelper.generateRazorpay(req.session.user._id, total, req.session.user._id)
   }).then((response) => {
@@ -187,30 +180,11 @@ exports.onlinePayment = async (req, res) => {
   }).catch((err) => {
     console.error("error in generating receipt", err);
   })
-  // userhelper.totalPrice(req.session.user._id).then((total) => {
-  //   return userhelper.generateRazorpay(req.session.user._id, total, req.session.user._id)
-  // }).then((response) => {
-  //   console.log("generated receipt", response);
-  //   res.json({ status: true, data: response,user: req.session.user });
-  // }).catch((err) => {
-  //   console.error("error in generating receipt", err);
-  // })
-  // .then(()=>{
-  //   return userhelper.clearCart(user)
-  // }).then((res)=>{
-  //   console.log("cart Cleared",res.result);
-  // }).then(() => {
-  //   return userhelper.ordersToOrderHistory(user)
-  // }).then((response) => {
-  //   console.log("added to ordered History", response.result);
-  // }).then(() => {
-  //   res.json({ status: true, redirect: '/your%20orders' })
-  // })
+
 }
 
 exports.afterPayment = (req, res) => {
   let user = req.session.user._id;
-
   userhelper.addConfirmation(req.session.user._id, 'online').then(() => {
     return userhelper.totalPrice(req.session.user._id)
   }).then(() => {

@@ -3,19 +3,19 @@
     <div class="container">
       <div class="card-columns row ">
         {{#each products}}
-        <div class="col-md-3">
-          <div class="card" style="width: 15rem;">
-            <img class='p-4 card-img-top ' style="height: inherit;width: inherit;" src="product-images/{{this._id}}.jpeg" alt="" />
+        {{!-- <div class="col-md-2"> --}}
+          <div class="card m-1" style="height: auto; width: 20rem;">
+            <img class='px-2 py-2 card-img-top ' style="height: 200px; width: 200px;"  src="product-images/{{this._id}}.jpeg" alt="" />
             <div class="card-body">
-              <h5 class="card-title">{{this.product_name}}</h5>
-              <p class="card-text">{{this.product_description}}</p>
-              <div class=" card-footer">
+              <p class="card-title">{{this.product_name}}</p>
+              {{!-- <p class="card-text">{{this.product_description}}</p> --}}
+              <div class="bg-white sticky-xl-top" style="bottom: 0;">
                 <h4 class="text-dark"><i class="fa fa-inr"></i> {{this.product_price}}</h4>  
                 <button class="btn btn-warning " onclick="addToCart('{{this._id}}')" >Add To Cart</button>    
               </div>
             </div>
           </div>
-        </div>
+        {{!-- </div> --}}
         {{/each}}
       </div>
     </div>

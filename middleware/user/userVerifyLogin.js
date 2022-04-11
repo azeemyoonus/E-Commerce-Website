@@ -3,7 +3,9 @@ const verifyLogin=(req,res,next)=>{
         next()
     }
     else{
+        console.log("calling here")
         res.redirect('/login');
+        Error("not logged");
     }
 }
 

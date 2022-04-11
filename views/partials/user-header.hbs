@@ -11,38 +11,36 @@
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Hi, {{user.user_name}}
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-              <a href='#' class="btn btn-success dropdown-item text-dark" type="button">Your Account</a>
-              <a href='/your orders' class="btn btn-success dropdown-item text-secondary" type="button">Your Orders</a>
-              <a href='/signout' class="btn btn-success dropdown-item text-secondary " type="button">sign Out</a>
+            <div class="border border-secondary shadow-sm dropdown-menu" aria-labelledby="dropdownMenu2">
+              <a href='#' class="btn dropdown-item text-dark hover" type="button"> <i
+                  class="bi bi-person text-primary"></i>&nbsp;&nbsp;My Profile</a>
+              <a href='/your orders' class="btn  dropdown-item text-dark border_top hover" type="button"><i
+                  class="bi bi-box-seam text-primary"></i>&nbsp;&nbsp;Your Orders</a>
+              <a href='/signout' class="btn  dropdown-item text-dark border_top hover" type="button"><i
+                  class="bi bi-power text-primary"></i>&nbsp;&nbsp;sign Out</a>
             </div>
           </div>
-
-          {{else}}
-          <div class="ms-auto  dropdown">
-            <button class="btn btn-sm corner btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              Hi, Sign in
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-              <a href='#' class="btn btn-success dropdown-item text-secondary disabled" type="button">Your Account</a>
-              <a href='#' class="btn btn-success dropdown-item text-secondary disabled" type="button">Your Orders</a>
-              <a href='/login' class="btn btn-success dropdown-item text-dark " type="button">Sign In</a>
-            </div>
-          </div>
-          {{/if}}
-
-
-
           <div class="  " id="cartCount">
             <button onclick="goToCart()" type="button" class="btn corner ms-2  btn-sm btn-secondary position-relative">
               Cart
-              <span class="position-absolute top-0 start-100 translate-middle text-wrap fw-bold text-success border badge rounded-pill bg-light">
-               {{count}}
+              <span
+                class="position-absolute top-0 start-100 translate-middle text-wrap fw-bold text-success border badge rounded-pill bg-light">
+                {{count}}
               </span>
             </button>
           </div>
-
+          {{else}}
+          <div class=" pe-5 me-2 ms-auto dropdown">
+            <button class="btn btn-sm corner btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Hi, Sign in
+            </button>
+            <div class="border border-secondary shadow-sm dropdown-menu" aria-labelledby="dropdownMenu2">
+              <a href='/login' class="btn  dropdown-item text-dark  hover" type="button"><i
+                  class="bi bi-power text-primary"></i>&nbsp;&nbsp;Sign In</a>
+            </div>
+          </div>
+          {{/if}}
 
         </nav>
       </div>

@@ -17,6 +17,8 @@ router.get(('/user-signup'), userControllers.usersignUp_get)
 
 router.post('/user-signup', userControllers.userSignUp_Post);
 
+// router.get("/addToCart"+id, verifyLogin, userControllers.)
+
 router.get('/signout', userControllers.signOut);
 
 router.get('/cart', verifyLogin, userControllers.cart);
