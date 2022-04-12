@@ -47,4 +47,6 @@ router.get('/your%20orders', verifyLogin, userControllers.yourOrders);
 
 router.post('/confirm%20order',verifyLogin, userControllers.confirmOrder);
 
+router.put('/cancel%20your%20order', verifyLogin, userControllers.cancelYourOrderItm);
+
 module.exports = router;

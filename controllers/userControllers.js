@@ -30,7 +30,7 @@ exports.login = (req, res) => {
   }
   else {
     console.log("hello>")
-    res.render('user/user-login', { "loginErr": req.session.loginErr})
+    res.render('user/user-login', { "loginErr": req.session.loginErr })
     req.session.loginErr = null;
   }
 }
@@ -194,8 +194,8 @@ exports.afterPayment = (req, res) => {
   }).then(() => {
     return userhelper.ordersToOrderHistory(user).then((res) => {
       console.log("added to ordered History", res.result)
-    }).then(()=>{
-      res.json({status:true, redirect:'/your%20orders'})
+    }).then(() => {
+      res.json({ status: true, redirect: '/your%20orders' })
     })
   })
 }
@@ -246,4 +246,11 @@ exports.confirmOrder = (req, res) => {
   else if (type == 'online') {
     //
   }
+}
+
+exports.cancelYourOrderItm = (req, res) => {
+  userhelper.canclOrdrItm(req.session.user._id).then((response)=>{
+    console.log(response);
+  })
+
 }

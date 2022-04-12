@@ -7,8 +7,6 @@ var Razorpay = require('razorpay');
 var objectid = require('mongodb').ObjectID;
 var instance = new Razorpay({ key_id: 'rzp_test_kwnIaBUPumh7LR', key_secret: '2KAtQVWDhldMDbwMawG280eN' })
 var dateFormat = require("dateformat");
-const { orderSummary } = require('../controllers/userControllers');
-const { on } = require('events');
 
 module.exports = {
 
@@ -217,7 +215,7 @@ module.exports = {
                 {
                     $project:
                     {
-                        price: { $convert: { input: '$product.product_price', to: 'int' ,onError: '',onNull: '' } },
+                        price: { $convert: { input: '$product.product_price', to: 'int', onError: '', onNull: '' } },
                         item: 1,
                         quantity: 1,
 
@@ -485,7 +483,7 @@ module.exports = {
                         orders: 1,
                         _id: 0,
                     }
-                }
+                },
             ]).toArray()
             resolve(productDetails[0].orders);
         })
@@ -624,6 +622,27 @@ module.exports = {
                 resolve({ payment: true })
 
             }
+        })
+    },
+
+    canclOrdrItm: (userId, prodId) => {
+        return new Promise(async (resolve, reject) => {
+            data = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+                {
+                    $match:{userId: objectid(userId)}
+                    
+                },
+                {
+                    $project:
+                        { productSummary: { productDetails:{_id: objectid(prodId) } }}
+                }
+            ]
+            ).toArray()
+
+                .then((response) => {
+                    resolve(response[0].productSummary);
+                    console.log(data)
+                })
         })
     }
 
