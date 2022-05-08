@@ -302,6 +302,10 @@ module.exports = {
     },
     addOrderSummary: (id) => {
         return new Promise(async (resolve, reject) => {
+
+
+
+
             product = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
                 {
                     $match: { userCart_id: objectid(id) }
@@ -322,11 +326,13 @@ module.exports = {
                                 input: { $range: [0, { "$size": '$productDetails' }] },
                                 in: {
                                     productDetails: {
-                                        $arrayElemAt: ["$productDetails", "$$this"]
+                                        $mergeObjects: [{ $arrayElemAt: ["$productDetails", "$$this"] }, { $arrayElemAt: ["$products", "$$this"] }]
+                                        // $arrayElemAt: ["$productDetails", "$$this"],
+
+                                        //    $arrayElemAt: ["$products", "$$this"]
+
                                     },
-                                    productCount: {
-                                        $arrayElemAt: ["$products", "$$this"]
-                                    }
+
                                 }
                             }
                         }
@@ -341,6 +347,7 @@ module.exports = {
                 }
             ]).toArray()
             let productSummary = product[0].productDetails;
+            console.log("Hello why " + productSummary);
             let orders = {
                 userId: objectid(id),
                 productSummary,
@@ -396,7 +403,7 @@ module.exports = {
             else if (type == 'cash') {
                 paymentAndTime = {
                     orderedTime: orderedTime,
-                    paymentType: "Paid"
+                    paymentType: "Cash On Delivery"
                 }
             }
 
@@ -407,71 +414,71 @@ module.exports = {
             resolve()
         })
     },
-    getOrdersList: async (id) => {
-        return new Promise(async (resolve, reject) => {
-            paymentType = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
-                { $match: { userId: objectid(id) } },
-                {
-                    $project: {
-                        _id: 0,
-                        paymentType: 1,
-                    }
-                }
-            ]).toArray();
-            paymentType = paymentType[0].paymentType
+    // getOrdersList: async (id) => {
+    //     return new Promise(async (resolve, reject) => {
+    //         paymentType = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+    //             { $match: { userId: objectid(id) } },
+    //             {
+    //                 $project: {
+    //                     _id: 0,
+    //                     paymentType: 1,
+    //                 }
+    //             }
+    //         ]).toArray();
+    //         paymentType = paymentType[0].paymentType
 
-            if (paymentType === 'Cash On Delivery') {
-                console.log("please get my details");
-                details = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
-                    { $match: { userCart_id: objectid(id) } },
-                    {
-                        $lookup: {
-                            from: collections.PRODUCT_COLLECTION,
-                            localField: "products.item",
-                            foreignField: "_id",
-                            as: 'orderedDetails'
-                        }
-                    },
-                    {
-                        $project: {
-                            _id: 0,
+    //         if (paymentType === 'Cash On Delivery') {
+    //             console.log("please get my details");
+    //             details = await db.get().collection(collections.CART_COLLECTIONS).aggregate([
+    //                 { $match: { userCart_id: objectid(id) } },
+    //                 {
+    //                     $lookup: {
+    //                         from: collections.PRODUCT_COLLECTION,
+    //                         localField: "products.item",
+    //                         foreignField: "_id",
+    //                         as: 'orderedDetails'
+    //                     }
+    //                 },
+    //                 {
+    //                     $project: {
+    //                         _id: 0,
 
-                        }
-                    },
+    //                     }
+    //                 },
 
-                ]).toArray();
-                console.log('this');
-                console.log(details[0]);
+    //             ]).toArray();
+    //             console.log('this');
+    //             console.log(details[0]);
 
-                var now = new Date();
-                orderedTime = {
-                    day: dateFormat(now, 'dd'),
-                    month: dateFormat(now, 'mmmm'),
-                    year: dateFormat(now, 'yyyy'),
-                    hours: dateFormat(now, 'HH'),
-                    minutes: dateFormat(now, 'MM'),
-                }
-                var details = {
-                    userId: objectid(id),
-                    orderedTime: orderedTime,
-                    productDetails: details[0].orderedDetails,
-                    status: "Cash On Delivery",
+    //             var now = new Date();
+    //             orderedTime = {
+    //                 day: dateFormat(now, 'dd'),
+    //                 month: dateFormat(now, 'mmmm'),
+    //                 year: dateFormat(now, 'yyyy'),
+    //                 hours: dateFormat(now, 'HH'),
+    //                 minutes: dateFormat(now, 'MM'),
+    //             }
+    //             var details = {
+    //                 userId: objectid(id),
+    //                 orderedTime: orderedTime,
+    //                 productDetails: details[0].orderedDetails,
+    //                 status: "Cash On Delivery",
 
-                }
+    //             }
 
-                db.get().collection(collections.ORDERED_LIST_COLLECTIONS).insertOne(details).then((data) => {
-                    console.log("succesfully added ");
-                    resolve()
-                })
+    //             db.get().collection(collections.ORDERED_LIST_COLLECTIONS).insertOne(details).then((data) => {
+    //                 console.log("succesfully added ");
+    //                 resolve()
+    //             })
 
 
-            } else if (paymentType === '') {
+    //         } else if (paymentType === '') {
 
-            }
+    //         }
 
-        })
+    //     })
 
-    },
+    // },
 
     getorderedDetails: (id) => {
         return new Promise(async (resolve, reject) => {
@@ -552,7 +559,9 @@ module.exports = {
                     }
 
                 ]).toArray()
+                console.log(productDetails);
                 productDetails = productDetails[0]
+                //console.log(productDetails)
 
                 await db.get().collection(collections.ORDERED_HISTORY).updateOne(
                     {
@@ -561,6 +570,7 @@ module.exports = {
                     { $push: { orders: productDetails } }
                 )
                     .then((response) => {
+                        console.log(response);
                         resolve(response)
                     })
 
@@ -590,7 +600,9 @@ module.exports = {
                     },
                     { $merge: collections.ORDERED_HISTORY },
                 ]).toArray()
+
                     .then((res) => {
+                        console.log(res);
                         resolve(res)
                     })
             }
@@ -627,14 +639,27 @@ module.exports = {
 
     canclOrdrItm: (userId, prodId) => {
         return new Promise(async (resolve, reject) => {
+
+            db.get().collection(collections.ORDER_COLLECTIONS).updateOne({ _id: objectid(userId), 'orders.productSummary.$.': objectid(productId) },
+                {
+                    $inc:
+                        { 'products.$.quantity': value }
+                }).then((response) => {
+                    resolve(response)
+                })
+
+
+
+
+
             data = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
                 {
-                    $match:{userId: objectid(userId)}
-                    
+                    $match: { userId: objectid(userId) }
+
                 },
                 {
                     $project:
-                        { productSummary: { productDetails:{_id: objectid(prodId) } }}
+                        { productSummary: { productDetails: { _id: objectid(prodId) } } }
                 }
             ]
             ).toArray()
