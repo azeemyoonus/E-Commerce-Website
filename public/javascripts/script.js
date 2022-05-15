@@ -201,7 +201,6 @@ verifyPayment = (response, paymentOrderId) => {
                     method:'get',
                     success:(response)=>{
                         if (response.status==true){
-                            alert("hi i am here");
                             window.location.href=response.redirect;
                         }
                         
@@ -222,10 +221,10 @@ item=()=>{
     alert("Hello");
 }
 
-cancelFrmOders=(prodId)=>{
-    alert(prodId);
+cancelFrmOders=(prodId, orderId)=>{
+    // alert(orderId);
     $.ajax({
-        url:'cancel%20your%20order?prodId='+prodId,
+        url:'cancel%20your%20order?prodId='+prodId+'&orderID='+orderId,
         method:'put',
         success:(response)=>{
             if (response.success){

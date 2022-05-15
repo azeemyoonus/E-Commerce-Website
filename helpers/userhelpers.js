@@ -293,7 +293,9 @@ module.exports = {
             }
             else {
                 instance.orders.create(options, async function (err, order) {
+                    console.log("i am here");
                     console.log(order);
+                    console.log(err);
                     await db.get().collection(collections.PAYMENT_COLLECTION).insertOne(order);
                     resolve({ id: order.id, amount: order.amount });
                 });
@@ -329,7 +331,7 @@ module.exports = {
                                         $mergeObjects: [{ $arrayElemAt: ["$productDetails", "$$this"] }, { $arrayElemAt: ["$products", "$$this"] }]
                                         // $arrayElemAt: ["$productDetails", "$$this"],
 
-                                        //    $arrayElemAt: ["$products", "$$this"]
+                                        // $arrayElemAt: ["$products", "$$this"]
 
                                     },
 
@@ -347,14 +349,17 @@ module.exports = {
                 }
             ]).toArray()
             let productSummary = product[0].productDetails;
-            console.log("Hello why " + productSummary);
+
+            console.log(productSummary);
             let orders = {
                 userId: objectid(id),
                 productSummary,
             }
-            //checking if an user has orders document
+
+            // checking if an user has orders document
             orderCollection = await db.get().collection(collections.ORDER_COLLECTIONS).findOne({ userId: objectid(id) })
             if (orderCollection) {
+
                 await db.get().collection(collections.ORDER_COLLECTIONS).updateOne({ userId: objectid(id) },
                     { $set: { productSummary: productSummary } }).then((response) => {
                         resolve(response)
@@ -365,7 +370,8 @@ module.exports = {
                     resolve(response.ops[0])
                 })
             }
-        })
+        }
+        )
     },
 
     getSummaryStatus: (id) => {
@@ -492,6 +498,7 @@ module.exports = {
                     }
                 },
             ]).toArray()
+            console.log(productDetails[0].orders)
             resolve(productDetails[0].orders);
         })
 
@@ -546,6 +553,7 @@ module.exports = {
 
     ordersToOrderHistory: (id) => {
         return new Promise(async (resolve, reject) => {
+            var odrID = new objectid();
 
             alreadyExist = await db.get().collection(collections.ORDERED_HISTORY).findOne({ _id: objectid(id) })
             if (alreadyExist != null) {
@@ -561,7 +569,7 @@ module.exports = {
                 ]).toArray()
                 console.log(productDetails);
                 productDetails = productDetails[0]
-                //console.log(productDetails)
+                productDetails.orderId = odrID;
 
                 await db.get().collection(collections.ORDERED_HISTORY).updateOne(
                     {
@@ -570,13 +578,12 @@ module.exports = {
                     { $push: { orders: productDetails } }
                 )
                     .then((response) => {
-                        console.log(response);
                         resolve(response)
                     })
 
             }
             else {
-                details = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+                productDetails = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
                     { $match: { userId: objectid(id) } },
                     {
                         $lookup: {
@@ -588,8 +595,10 @@ module.exports = {
                     },
                     {
                         $group: {
-                            _id: "$userId", orders: {
+                            _id: "$userId",
+                            orders: {
                                 $push: {
+                                    orderId: odrID,
                                     productSummary: "$productSummary",
                                     totalPrice: "$totalPrice",
                                     orderedTime: "$orderedTime",
@@ -602,7 +611,6 @@ module.exports = {
                 ]).toArray()
 
                     .then((res) => {
-                        console.log(res);
                         resolve(res)
                     })
             }
@@ -637,37 +645,147 @@ module.exports = {
         })
     },
 
-    canclOrdrItm: (userId, prodId) => {
+    canclOrdrItm: (userId, prodId, orderID) => {
         return new Promise(async (resolve, reject) => {
+            console.log(orderID);
 
-            db.get().collection(collections.ORDER_COLLECTIONS).updateOne({ _id: objectid(userId), 'orders.productSummary.$.': objectid(productId) },
-                {
-                    $inc:
-                        { 'products.$.quantity': value }
-                }).then((response) => {
-                    resolve(response)
-                })
+            // let findProd={
+            //     $cond:{
+            //         if:{ 'orders.$.productSummary.$._id': objectid(orderID) },
+            //         then: {}
+            //     }
+            // }
+
+            // db.get().collection(collections.ORDERED_HISTORY).updateOne(
+            //     { '_id': objectid(userId), 'orders.orderId': objectid(orderID) },
+            //     {
+
+            //         $pull: { "orders": { "productSummary": { "productDetails._id": objectid(prodId) } } }
+
+
+            //     })
+            //     .then((res) => {
+            //         resolve(res)
+            //     })
+
+
+            // db.get().collection(collections.ORDERED_HISTORY).aggregate([
+            //     {
+            //         $match: {
+            //             _id: objectid(userId)
+            //         }
+            //     },
+            //     {
+            //         $project: {
+            //             _id: 0,
+            //             "orders":
+            //             {
+            //                 $filter: {
+            //                     input: "$orders",
+            //                     as: "cancelItem",
+            //                     cond:
+
+
+            //                     {
+            //                         $unset: { $eq: ["$$cancelItem.orderId", objectid(orderID)] }
+            //                     },
+            //                     // { $pull: ["$$cancelItem.productSummary.productDetails._id", objectid(prodId)] }
+
+
+            //                 },
+            //             }
+            //         }
+            //     },
+
+
+
+
+            //                     // [{ $eq: ["$$cancelItem.orderId", objectid(orderID)] },
+            //                     // { $eq: ["$$cancelItem.productSummary.productDetails._id", objectid(prodId)] }]
+            //                 },
+
+            //             },
+
+            //         }
+            //     },
+            //     {
+            //         $pull:{"orders":{"productSummary":{$in:{ $eq:["$productDetails._id", objectid(prodId) ]}}}}
+            //     }
 
 
 
 
 
-            data = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
-                {
-                    $match: { userId: objectid(userId) }
+            // {
 
-                },
-                {
-                    $project:
-                        { productSummary: { productDetails: { _id: objectid(prodId) } } }
-                }
-            ]
-            ).toArray()
+            //     $project: {
+            //         // _id:0,
+            //         "orders.productSummary":
+            //         {
+            //             $filter: {
+            //                 input: "$orders.productSummary",
+            //                 as: "prdoDetails",
+            //                 cond: { $eq: ["$$prdoDetails.$.$$productDetails._id", objectid(prodId)] }
+            //             }
+            //         }
 
-                .then((response) => {
-                    resolve(response[0].productSummary);
-                    console.log(data)
-                })
+            //     }
+            // }
+
+            // {
+            //     $project:{
+            //         "orders.productSummary":{
+            //             $pull:{productDetails: {_id : objectid(prodId)}}
+            //         }
+            //     }
+            // },
+            // {
+            //     $unset: { "orders": { "productSummary": { "$productDetails": { "_id": objectid(prodId) } } } }
+            // },
+            // {
+            //     $project:{
+            //         "":
+            //     }
+            // }
+
+
+
+
+
+            // ]).toArray().then((res) => {
+            //     console.log(res[0]);
+            // })
+
+            // data = await db.get().collection(collections.ORDERED_HISTORY).findOne({
+            //     "orders.$.orderId": objectid(orderID)
+            // });
+            // console.log(data);
+
+            // db.get().collection(collections.ORDER_COLLECTIONS).updateOne({ _id: objectid(userId), 'orders.productSummary.$.': objectid(productId) },
+            //     {
+            //         $inc:
+            //             { 'products.$.quantity': value }
+            //     }).then((response) => {
+            //         resolve(response)
+            //     })    
+
+            // data = await db.get().collection(collections.ORDER_COLLECTIONS).aggregate([
+            //     {
+            //         $match: { userId: objectid(userId) }
+
+            //     },
+            //     {
+            //         $project:
+            //             { productSummary: { productDetails: { _id: objectid(prodId) } } }
+            //     }
+            // ]
+            // ).toArray()
+
+            //     .then((response) => {
+            //         resolve(response[0].productSummary);
+            //         console.log(data)
+            //     })
+
         })
     }
 

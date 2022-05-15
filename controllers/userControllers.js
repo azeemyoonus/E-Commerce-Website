@@ -249,8 +249,10 @@ exports.confirmOrder = (req, res) => {
 }
 
 exports.cancelYourOrderItm = (req, res) => {
-  userhelper.canclOrdrItm(req.session.user._id).then((response)=>{
-    console.log(response);
+  // console.log(req.query.prodId);
+  // console.log(req.query.orderID);
+  userhelper.canclOrdrItm(req.session.user._id, req.query.prodId, req.query.orderID).then((response)=>{
+    // console.log(response);
   })
 
 }
